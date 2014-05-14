@@ -145,6 +145,12 @@ class BitcoinECDSA {
 		$pubKey 	= $this->mulPoint(gmp_strval(gmp_init($k,16)),array('x'=>$G['x'],'y'=>$G['y']),$a,$b,$p);
 		$pubKey['x']	= gmp_strval($pubKey['x'],16);
 		$pubKey['y']	= gmp_strval($pubKey['y'],16);
+		while(strlen($pubKey['x']) < 64) {
+			$pubKey['x'] = '0'.$pubKey['x'];
+		}
+		while(strlen($pubKey['y']) < 64) {
+			$pubKey['y'] = '0'.$pubKey['y'];
+		}
 		return $pubKey;
 	}
 
@@ -170,6 +176,26 @@ class BitcoinECDSA {
 			throw new Exception('Private Key is not in the 1,n-1 range');
 		}
 		$this->k = $k;
+	}
+
+	public function getPrivateKey() {
+		return $this->k;
+	}
+
+	//extra parameter can be some random data typed down by the user or mouse movements to add randomness
+	public function generateRandomPrivateKey($extra = 'FSQF5356dsdsqdfEFEQ3fq4q6dq4s5d') {
+		//private key has to be passed as an hexadecimal number
+		do { //generate a new random pivate key until to find one that is valid
+			for ($i = 0; $i <= 128; $i++) {
+				$bytes = openssl_random_pseudo_bytes($i, $cstrong);
+				$hex   = bin2hex($bytes);
+			}
+			if(!$cstrong) {
+				throw new Exception('Your system is not able to generate string enough random numbers');
+			}
+			$random = $hex . microtime(true).rand(100000000000,1000000000000).$extra;
+			$this->k = hash('sha256',$random);
+		} while(gmp_cmp(gmp_init($this->k,16),gmp_sub($this->n,1)) == 1);
 	}
 }
 
