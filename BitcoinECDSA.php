@@ -26,8 +26,14 @@ class BitcoinECDSA {
 	}
 
 	//Wallet Import Format
-	public function wif($secretKey) {
-		$secretKey = "80".$secretKey;
+	public function wif() {
+
+		if(!isset($this->k))
+		{
+			throw new Exception('No Private Key was defined');
+		}
+		$k = $this->k;
+		$secretKey = "80".$k;
 		$firstSha256 = hash("sha256",hex2bin($secretKey));
 		$secondSha256 = hash("sha256",hex2bin($firstSha256));
 		$secretKey .= substr($secondSha256,0,8);
@@ -122,18 +128,19 @@ class BitcoinECDSA {
 		return $lastPoint;
 	}
 
-	public function generatePubKey($k) {
+	public function generatePubKey() {
 
 		$a = $this->a;
 		$b = $this->b;
 		$p = $this->p;
 		$n = $this->n;
 		$G = $this->G;
-
-		if(gmp_cmp(gmp_init($k,16),gmp_sub($n,1)) == 1)
+		
+		if(!isset($this->k))
 		{
-			throw new Exception('Private Key is not in the 1,n-1 range');
+			throw new Exception('No Private Key was defined');
 		}
+		$k = $this->k;
 
 		$pubKey 	= $this->mulPoint(gmp_strval(gmp_init($k,16)),array('x'=>$G['x'],'y'=>$G['y']),$a,$b,$p);
 		$pubKey['x']	= gmp_strval($pubKey['x'],16);
@@ -141,7 +148,9 @@ class BitcoinECDSA {
 		return $pubKey;
 	}
 
-	public function generateAddress($pubKey) {
+	public function generateAddress() {
+
+		$pubKey = $this->generatePubKey();
 		$address  	= "04".$pubKey['x'].$pubKey['y'];
 		$sha256		= hash("sha256",hex2bin($address));
 		$ripem160 	= hash("ripemd160",hex2bin($sha256));
@@ -154,6 +163,14 @@ class BitcoinECDSA {
 		return strrev($this->base58_encode($address)."1");
 	}
 
+	public function setPrivateKey($k) {
+		//private key has to be passed as an hexadecimal number
+		if(gmp_cmp(gmp_init($k,16),gmp_sub($this->n,1)) == 1)
+		{
+			throw new Exception('Private Key is not in the 1,n-1 range');
+		}
+		$this->k = $k;
+	}
 }
 
 ?>
