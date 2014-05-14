@@ -14,13 +14,13 @@ print_r($bitcoinECDSA->getPrivateKey());
 
 echo "<br/>";
 
-print_r($bitcoinECDSA->wif());
+print_r($bitcoinECDSA->getWif());
 
 echo "<br/>";
 
-print_r($bitcoinECDSA->generatePubKey());
+print_r($bitcoinECDSA->getPubKey());
 
 echo "<br/>";
 
-print_r($bitcoinECDSA->generateAddress());
+print_r($bitcoinECDSA->getAddress());
 ?>

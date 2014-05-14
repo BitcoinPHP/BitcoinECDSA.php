@@ -26,7 +26,7 @@ class BitcoinECDSA {
 	}
 
 	//Wallet Import Format
-	public function wif() {
+	public function getWif() {
 
 		if(!isset($this->k))
 		{
@@ -128,7 +128,7 @@ class BitcoinECDSA {
 		return $lastPoint;
 	}
 
-	public function generatePubKey() {
+	public function getPubKey() {
 
 		$a = $this->a;
 		$b = $this->b;
@@ -154,9 +154,9 @@ class BitcoinECDSA {
 		return $pubKey;
 	}
 
-	public function generateAddress() {
+	public function getAddress() {
 
-		$pubKey = $this->generatePubKey();
+		$pubKey = $this->getPubKey();
 		$address  	= "04".$pubKey['x'].$pubKey['y'];
 		$sha256		= hash("sha256",hex2bin($address));
 		$ripem160 	= hash("ripemd160",hex2bin($sha256));
