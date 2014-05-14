@@ -10,6 +10,7 @@ class BitcoinECDSA {
 		$this->a = gmp_init("0");
 		$this->b = gmp_init("7");
 		$this->p = gmp_init("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F",16);
+		$this->n = gmp_init("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141",16);
 
 		$this->G = array('x' => gmp_init("55066263022277343669578718895168534326250603453777594175500187360389116729240"),
 			   	 'y' => gmp_init("32670510020758816978083085130507043184471273380659243275938904335757337482424"));
@@ -47,7 +48,7 @@ class BitcoinECDSA {
 	}
 
 	public function doublePoint($pt) {
-		
+
 		$a = $this->a;
 		$b = $this->b;
 		$p = $this->p;
@@ -58,7 +59,7 @@ class BitcoinECDSA {
 		$gcd = gmp_strval(gmp_gcd(gmp_mul( 2,$pt['y'] ),$p));
 		if($gcd!="1")
 		{
-			throw new Exception('GCD is not equal to 1, this is not handled by this library');
+			throw new Exception('GCD is not equal to 1, Something went wrong in the public key generation');
 		}
 
 		$s = gmp_mod(gmp_mul(gmp_invert(gmp_mul( 2,$pt['y'] ),$p),gmp_add(gmp_mul(3,gmp_pow($pt['x'],2)),$a)),$p);
@@ -70,7 +71,7 @@ class BitcoinECDSA {
 	}
 
 	public function addPoints($pt1,$pt2) {
-	
+
 		$a = $this->a;
 		$b = $this->b;
 		$p = $this->p;
@@ -85,7 +86,7 @@ class BitcoinECDSA {
 		$gcd = gmp_strval(gmp_gcd(gmp_sub($pt1['x'],$pt2['x']),$p));
 		if($gcd!="1")
 		{
-			throw new Exception('GCD is not equal to 1, this is not handled by this library');
+			throw new Exception('GCD is not equal to 1, Something went wrong in the public key generation');
 		}
 
 		$s = gmp_mod(gmp_mul(gmp_sub($pt1['y'],$pt2['y']),gmp_invert(gmp_sub($pt1['x'],$pt2['x']),$p)),$p);
@@ -108,7 +109,7 @@ class BitcoinECDSA {
 
 		$lastPoint = $pG;
 		for($i = 1; $i < strlen($kBin); $i++) {
-		
+
 			if( substr($kBin,$i,1) == 1 ) {
 				$dPt = $this->doublePoint($lastPoint);
 				$lastPoint = $this->addPoints($dPt,$pG);
@@ -116,7 +117,7 @@ class BitcoinECDSA {
 			else {
 				$lastPoint = $this->doublePoint($lastPoint);
 			}
-		
+
 		}
 		return $lastPoint;
 	}
@@ -126,7 +127,13 @@ class BitcoinECDSA {
 		$a = $this->a;
 		$b = $this->b;
 		$p = $this->p;
+		$n = $this->n;
 		$G = $this->G;
+
+		if(gmp_cmp(gmp_init($k,16),gmp_sub($n,1)) == 1)
+		{
+			throw new Exception('Private Key is not in the 1,n-1 range');
+		}
 
 		$pubKey 	= $this->mulPoint(gmp_strval(gmp_init($k,16)),array('x'=>$G['x'],'y'=>$G['y']),$a,$b,$p);
 		$pubKey['x']	= gmp_strval($pubKey['x'],16);
