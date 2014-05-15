@@ -218,6 +218,14 @@ class BitcoinECDSA {
 			$this->k = hash('sha256',$random);
 		} while(gmp_cmp(gmp_init($this->k,16),gmp_sub($this->n,1)) == 1);
 	}
+
+	public function testAddress($address) {
+		//TODO
+	}
+
+	public function testWifKey($wif) {
+		//TODO
+	}
 }
 
 ?>
