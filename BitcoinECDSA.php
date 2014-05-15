@@ -128,7 +128,7 @@ class BitcoinECDSA {
 		return $lastPoint;
 	}
 
-	public function getPubKey() {
+	public function getUncompressedPubKey() {
 
 		$a = $this->a;
 		$b = $this->b;
@@ -154,10 +154,27 @@ class BitcoinECDSA {
 		return $pubKey;
 	}
 
-	public function getAddress() {
+	public function getPubKey() {
 
-		$pubKey = $this->getPubKey();
-		$address  	= "04".$pubKey['x'].$pubKey['y'];
+		$pubKey = $this->getUncompressedPubKey();
+		if(gmp_strval(gmp_mod(gmp_init($pubKey['y'],16),2)) == 0)
+			$pubKey  	= "02".$pubKey['x'];	//if $pubKey['y'] is even
+		else
+			$pubKey  	= "03".$pubKey['x'];	//if $pubKey['y'] is odd
+
+		return $pubKey;
+	}
+
+	public function getUncompressedAddress($compressed = false) {
+
+		if($compressed) {
+			$address 	= $this->getPubKey();
+		}
+		else {
+			$pubKey 	= $this->getUncompressedPubKey();
+			$address  	= "04".$pubKey['x'].$pubKey['y'];
+		}
+
 		$sha256		= hash("sha256",hex2bin($address));
 		$ripem160 	= hash("ripemd160",hex2bin($sha256));
 		$address 	= "00".$ripem160; //00 = main network, 6f = test network
@@ -167,6 +184,10 @@ class BitcoinECDSA {
 		$sha256		= hash("sha256",hex2bin($sha256));
 		$address 	= $address.substr($sha256,0,8);
 		return strrev($this->base58_encode($address)."1");
+	}
+
+	public function getAddress() {
+		return $this->getUncompressedAddress(true);
 	}
 
 	public function setPrivateKey($k) {
