@@ -51,6 +51,25 @@ returns the private key under the Wallet Import Format
     $bitcoinECDSA->getPubKey();
     
 Returns the compressed public key.
+The uncompressed PubKey starts with 0x02 if it's y coordinate is even and 0x03 if it's odd, the next 32 bytes corresponds to the x coordinates.
+Example : 0226c50013603b085fbc26411d5d7e564b252d88964eedc4e01251d2d495e92c29
+
+**Get the Uncompressed Public Key**
+
+    
+    $bitcoinECDSA->getUncompressedPubKey();
+    
+The uncompressed PubKey starts with 0x04 the next 32 bytes are the x coordinates, the last 32 bytes are the y coordinates.
+Example : 04c80e8af3f1b7816a18aa24f242fc0740e9c4027d67c76dacf4ce32d2e5aace241c426fd288a9976ca750f1b192d3acd89dfbeca07ef27f3e5eb5d482354c4249
+
+**Get the coordinates of the Public Key**
+
+    
+    $bitcoinECDSA->getPubKeyPoints();
+    
+Returns an array of the x and y coordinates of the public key
+Example :
+Array ( [x] => a69243f3c4c047aba38d7ac3660317629c957ab1f89ea42343aee186538a34f8 [y] => b6d862f39819060378542a3bb43ff76b5d7bb23fc012f09c3cd2724bebe0b0bd ) 
 
 **Get the Address**
 
