@@ -16,13 +16,70 @@ class BitcoinECDSA {
 			   	 'y' => gmp_init("32670510020758816978083085130507043184471273380659243275938904335757337482424"));
 	}
 
-	public function base58_permutation($number) {
+	public function base58_permutation($char,$reverse = false) {
 		$table = array("1","2","3","4","5","6","7","8","9","A","B","C","D",
 		"E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W",
 		"X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","m","n","o",
 		"p","q","r","s","t","u","v","w","x","y","z");
 
-		return $table[$number];
+		if($reverse) {
+			$reversedTable = array();
+			foreach($table as $key=>$element) {
+				$reversedTable[$elemen] = $key;
+			}
+			if(isset($reversedTable[$char]))
+				return $reversedTable[$char];
+			else
+				return null;
+		}
+		if(isset($table[$char]))
+			return $table[$char];
+		else
+			return null;
+	}
+
+	public function base58_encode($data,$littleEndian = true) {
+		$res ="";
+		$dataIntVal = gmp_init($data,16);
+		while(gmp_cmp($dataIntVal,"0") > 0)
+		{
+			$qr = gmp_div_qr($dataIntVal, 58);
+			$dataIntVal = $qr[0];
+			$reminder = gmp_strval($qr[1]);
+			if(!$this->base58_permutation($reminder))
+			{
+				throw new Exception('Something went wrong during base58 encoding');
+			}
+			$res .= $this->base58_permutation($reminder);
+		}
+		//get number of leading zeros
+		
+		$leading = '';
+		$i=0;
+		while(substr($data,$i,1) == '0')
+		{
+			if($i!= 0 && $i%2)
+				$leading .= '1';
+			$i++;
+		}
+
+		if($littleEndian)
+			return strrev($res.$leading);
+		else
+			return $res.$leading;
+	}
+
+	public function base58_decode($encodedData) {
+		$res ="";
+		$dataIntVal = gmp_init($data,16);
+		while(gmp_cmp($dataIntVal,"0") > 0)
+		{
+			$qr = gmp_div_qr($dataIntVal, 58);
+			$dataIntVal = $qr[0];
+			$reminder = gmp_strval($qr[1]);
+			$res .= $this->base58_permutation($reminder);
+		}
+		return $res;
 	}
 
 	//Wallet Import Format
@@ -38,19 +95,6 @@ class BitcoinECDSA {
 		$secondSha256 = hash("sha256",hex2bin($firstSha256));
 		$secretKey .= substr($secondSha256,0,8);
 		return strrev($this->base58_encode($secretKey));
-	}
-
-	public function base58_encode($data,$base = 16) {
-		$res ="";
-		$dataIntVal = gmp_init($data,$base);
-		while(gmp_cmp($dataIntVal,"0") > 0)
-		{
-			$qr = gmp_div_qr($dataIntVal, 58);
-			$dataIntVal = $qr[0];
-			$reminder = gmp_strval($qr[1]);
-			$res .= $this->base58_permutation($reminder);
-		}
-		return $res;
 	}
 
 	public function doublePoint($pt) {
@@ -190,17 +234,7 @@ class BitcoinECDSA {
 		$sha256		= hash("sha256",hex2bin($sha256));
 		$address 	= $address.substr($sha256,0,8);
 
-		//get the numbers of 1 to put in front of the address
-		$addressPrefix = '';
-		$i=0;
-		while(substr($address,$i,1) == '0')
-		{
-			if($i!= 0 && $i%2)
-				$addressPrefix .= '1';
-			$i++;
-		}
-
-		return strrev($this->base58_encode($address).$addressPrefix);
+		return $this->base58_encode($address);
 	}
 
 	public function getAddress() {
@@ -238,6 +272,10 @@ class BitcoinECDSA {
 
 	public function testAddress($address) {
 		//TODO
+		$addressLen = strlen($address);
+		$nbrOfZeroToPrepend = $addressLen*2;
+		
+		
 	}
 
 	public function testWifKey($wif) {
