@@ -183,7 +183,18 @@ class BitcoinECDSA {
 		$sha256		= hash("sha256",hex2bin($address));
 		$sha256		= hash("sha256",hex2bin($sha256));
 		$address 	= $address.substr($sha256,0,8);
-		return strrev($this->base58_encode($address)."1");
+
+		//get the numbers of 1 to put in front of the address
+		$addressPrefix = '';
+		$i=0;
+		while(substr($address,$i,1) == '0')
+		{
+			if($i!= 0 && $i%2)
+				$addressPrefix .= '1';
+			$i++;
+		}
+
+		return strrev($this->base58_encode($address).$addressPrefix);
 	}
 
 	public function getAddress() {

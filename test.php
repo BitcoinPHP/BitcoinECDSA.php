@@ -12,7 +12,7 @@ $bitcoinECDSA->setPrivateKey($k);
 
 
 
-for($i = 0; $i<200; $i++) {
+for($i = 0; $i<250; $i++) {
 
 	$bitcoinECDSA->generateRandomPrivateKey();
 
