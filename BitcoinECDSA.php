@@ -128,7 +128,7 @@ class BitcoinECDSA {
 		return $lastPoint;
 	}
 
-	public function getUncompressedPubKey() {
+	public function getPubKeyPoints() {
 
 		$a = $this->a;
 		$b = $this->b;
@@ -154,9 +154,16 @@ class BitcoinECDSA {
 		return $pubKey;
 	}
 
+	public function getUncompressedPubKey() {
+
+		$pubKey			= $this->getPubKeyPoints();
+		$uncompressedPubKey	= "04".$pubKey['x'].$pubKey['y'];
+		return $uncompressedPubKey;
+	}
+
 	public function getPubKey() {
 
-		$pubKey = $this->getUncompressedPubKey();
+		$pubKey = $this->getPubKeyPoints();
 		if(gmp_strval(gmp_mod(gmp_init($pubKey['y'],16),2)) == 0)
 			$pubKey  	= "02".$pubKey['x'];	//if $pubKey['y'] is even
 		else
@@ -171,8 +178,7 @@ class BitcoinECDSA {
 			$address 	= $this->getPubKey();
 		}
 		else {
-			$pubKey 	= $this->getUncompressedPubKey();
-			$address  	= "04".$pubKey['x'].$pubKey['y'];
+			$address 	= $this->getUncompressedPubKey();
 		}
 
 		$sha256		= hash("sha256",hex2bin($address));
