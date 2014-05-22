@@ -263,7 +263,7 @@ class BitcoinECDSA {
 				$hex   = bin2hex($bytes);
 			}
 			if(!$cstrong) {
-				throw new Exception('Your system is not able to generate string enough random numbers');
+				throw new Exception('Your system is not able to generate strong enough random numbers');
 			}
 			$random = $hex . microtime(true).rand(100000000000,1000000000000).$extra;
 			$this->k = hash('sha256',$random);
