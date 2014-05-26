@@ -270,7 +270,7 @@ class BitcoinECDSA {
 		} while(gmp_cmp(gmp_init($this->k,16),gmp_sub($this->n,1)) == 1);
 	}
 
-	public function testAddress($address) {
+	public function validateAddress($address) {
 		//TODO
 		$addressLen = strlen($address);
 		$nbrOfZeroToPrepend = $addressLen*2;
@@ -278,7 +278,7 @@ class BitcoinECDSA {
 		
 	}
 
-	public function testWifKey($wif) {
+	public function validateWifKey($wif) {
 		//TODO
 	}
 }
