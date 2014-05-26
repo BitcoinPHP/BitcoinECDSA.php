@@ -7,6 +7,7 @@ REQUIREMENTS
 ===============
 
 *php 5.4.0* or newer.
+
 *php5-gmp* needs to be installed
 
 USAGE
