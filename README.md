@@ -1,7 +1,13 @@
-Warning
+WARNING
 ===============
 
 This piece of software is provided without warranty of any kind, use it at your own risk.
+
+REQUIREMENTS
+===============
+
+*php 5.4.0* or newer.
+*php5-gmp* needs to be installed
 
 USAGE
 ===============
