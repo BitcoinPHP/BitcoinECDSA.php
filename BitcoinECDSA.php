@@ -126,7 +126,7 @@ class BitcoinECDSA {
 		$b = $this->b;
 		$p = $this->p;
 
-		if(gmp_cmp($pt1['x'],$pt2['x']) == 0) //if identical
+		if(gmp_cmp($pt1['x'],$pt2['x']) == 0  && gmp_cmp($pt1['y'],$pt2['y']) == 0) //if identical
 			return $this->doublePoint($pt1);
 
 
