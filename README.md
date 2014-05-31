@@ -82,7 +82,7 @@ Example : 04c80e8af3f1b7816a18aa24f242fc0740e9c4027d67c76dacf4ce32d2e5aace241c42
 **Get the coordinates of the Public Key**
 
 ```php
-    $bitcoinECDSA->getPubKeyPoints();
+$bitcoinECDSA->getPubKeyPoints();
 ```
 
 Returns an array containing the x and y coordinates of the public key
@@ -93,7 +93,7 @@ Array ( [x] => a69243f3c4c047aba38d7ac3660317629c957ab1f89ea42343aee186538a34f8 
 **Get the Address**
 
 ```php
-    $bitcoinECDSA->getAddress();
+$bitcoinECDSA->getAddress();
 ```
 
 Returns the compressed Bitcoin Address.
@@ -101,7 +101,7 @@ Returns the compressed Bitcoin Address.
 **Get the uncompressed Address**
 
 ```php
-    $bitcoinECDSA->getUncompressedAddress();
+$bitcoinECDSA->getUncompressedAddress();
 ```
 
 Returns the uncompressed Bitcoin Address.
