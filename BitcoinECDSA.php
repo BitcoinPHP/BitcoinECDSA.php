@@ -258,15 +258,15 @@ class BitcoinECDSA {
 	public function generateRandomPrivateKey($extra = 'FSQF5356dsdsqdfEFEQ3fq4q6dq4s5d') {
 		//private key has to be passed as an hexadecimal number
 		do { //generate a new random pivate key until to find one that is valid
-			for ($i = 0; $i <= 128; $i++) {
-				$bytes = openssl_random_pseudo_bytes($i, $cstrong);
-				$hex   = bin2hex($bytes);
-			}
+			$bytes = openssl_random_pseudo_bytes(128, $cstrong);
+			$hex   = bin2hex($bytes);
+			$random = $hex . microtime(true).rand(100000000000,1000000000000).$extra;
+			$this->k = hash('sha256',$random);
+
 			if(!$cstrong) {
 				throw new Exception('Your system is not able to generate strong enough random numbers');
 			}
-			$random = $hex . microtime(true).rand(100000000000,1000000000000).$extra;
-			$this->k = hash('sha256',$random);
+
 		} while(gmp_cmp(gmp_init($this->k,16),gmp_sub($this->n,1)) == 1);
 	}
 

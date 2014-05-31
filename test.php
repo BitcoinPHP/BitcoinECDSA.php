@@ -19,8 +19,7 @@ for($i = 0; $i<250; $i++) {
 	//$bitcoinECDSA->setPrivateKey('4e5be7d3cd7685eb456e45a3c27352623bcf82fa195e77482a2297425e36e7cf');
 
 	$privKey = $bitcoinECDSA->getPrivateKey();
-
-	$sxPubKey = exec("echo -n \"$privKey\" | sx pubkey");
+	$sxPubKey = exec("echo -n \"$privKey\" | sx pubkey",$output,$retval);
 
 	if($bitcoinECDSA->getPubKey() != $sxPubKey) {
 		throw new Exception('Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
