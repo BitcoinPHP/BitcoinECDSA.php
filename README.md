@@ -8,7 +8,9 @@ REQUIREMENTS
 
 *php 5.4.0* or newer.
 
-*php5-gmp* needs to be installed
+*php5-gmp* needs to be installed.
+
+If you want to launch the test file you need to be under a unix system with libbitoin intalled on it.
 
 USAGE
 ===============
