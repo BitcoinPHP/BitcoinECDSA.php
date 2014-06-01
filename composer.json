@@ -1,0 +1,25 @@
+{
+    "name": "bitcoin-php/bitcoin-ecdsa",
+    "type": "library",
+    "description": "",
+    "keywords": ["ECDSA","Bitcoin"],
+    "homepage": "http://github.com/rgex/BitcoinECDSA.php",
+    "license": "unlicensed",
+    "authors": [
+        {
+            "name": "Jan Moritz Lindemann",
+            "email": "panda@panda.cat",
+            "homepage": "http://github.com/rgex",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "BitcoinPHP\\BitcoinECDSA": "src"
+        }
+    }
+}

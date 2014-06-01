@@ -1,5 +1,7 @@
 <?php
 
+namespace BitcoinPHP\BitcoinECDSA;
+
 if (!extension_loaded('gmp')) {
 	throw new Exception('GMP extension seems not to be installed');
 }

@@ -1,7 +1,11 @@
 <?php
+
 set_time_limit(0);
 
-require_once("BitcoinECDSA.php");
+use BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
+
+require_once("src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php");
+
 $bitcoinECDSA = new BitcoinECDSA();
 
 $k ="0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D";
