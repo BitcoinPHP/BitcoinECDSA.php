@@ -18,7 +18,8 @@ USAGE
 **Instanciation**
 
 ```php
-require_once("BitcoinECDSA.php");
+use BitcoinPHP\BitcoinECDSA\BitcoinECDSA;
+require_once("src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php");
 $bitcoinECDSA = new BitcoinECDSA();
 ```
 
