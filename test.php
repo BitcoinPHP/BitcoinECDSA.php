@@ -26,11 +26,24 @@ for($i = 0; $i<250; $i++) {
 	}
 
 	$sxAddr =  exec("echo -n \"$privKey\" | sx addr");
-echo "<i>".$sxAddr."</i><br/>";
-echo "<b>".$bitcoinECDSA->getAddress()."</b><br/>";
+	//echo "<i>".$sxAddr."</i><br/>";
+	//echo "<b>".$bitcoinECDSA->getAddress()."</b><br/>";
 	if($bitcoinECDSA->getAddress() != $sxAddr) {
 		throw new Exception('Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
 	}
+
+	$ucSxPubKey = exec("echo -n \"$privKey\" | sx pubkey false",$output,$retval);
+	//uncompressed address and pubkey
+	if($bitcoinECDSA->getUncompressedPubKey() != $ucSxPubKey) {
+		throw new Exception('Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
+	}
+
+	$ucSxAddr = exec("echo -n \"$privKey\" | sx pubkey false | sx addr",$output,$retval);
+	//uncompressed address and pubkey
+	if($bitcoinECDSA->getUncompressedAddress() != $ucSxAddr) {
+		throw new Exception('Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
+	}
+
 }
 
 echo "Tests ended successfully";
