@@ -3,13 +3,13 @@
     "type": "library",
     "description": "PHP library allowing to generate BTC addresses from private keys",
     "keywords": ["ECDSA","Bitcoin"],
-    "homepage": "http://github.com/rgex/BitcoinECDSA.php",
-    "license": "unlicensed",
+    "homepage": "https://github.com/BitcoinPHP/BitcoinECDSA.php",
+    "license": "unlicense",
     "authors": [
         {
-            "name": "Jan Moritz Lindemann",
+            "name": "BitcoinPHP",
             "email": "panda@panda.cat",
-            "homepage": "http://github.com/rgex",
+            "homepage": "http://github.com/BitcoinPHP",
             "role": "Developer"
         }
     ],
