@@ -87,7 +87,7 @@ class BitcoinECDSA {
             $res = "00".$res;
             $i--;
         }
-        if(strlen($res) %2 != 0)
+        if(strlen($res)%2 != 0)
             $res = "0".$res;
         return $res;
     }
@@ -280,12 +280,26 @@ class BitcoinECDSA {
         } while(gmp_cmp(gmp_init($this->k,16),gmp_sub($this->n,1)) == 1);
     }
 
+    /***
+     * Tests if the address is valid or not.
+     *
+     * @param {Hex} $address
+     * @return bool
+     */
     public function validateAddress($address) {
-        //TODO
-        $addressLen = strlen($address);
-        $nbrOfZeroToPrepend = $addressLen*2;
 
+        $address = hex2bin($this->base58_decode($address));
+        if(strlen($address) != 25)
+            return false;
+        $checksum = substr($address,21,4);
+        $rawAddress = substr($address,0,21);
+        $sha256		= hash("sha256",$rawAddress);
+        $sha256		= hash("sha256",hex2bin($sha256));
 
+        if(substr(hex2bin($sha256),0,4) == $checksum)
+            return true;
+        else
+            return false;
     }
 
     public function validateWifKey($wif) {
