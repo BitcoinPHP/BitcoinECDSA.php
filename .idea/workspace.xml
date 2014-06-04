@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.php" afterPath="$PROJECT_DIR$/test.php" />
     </list>
     <ignored path="BitcoinECDSA.php.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,7 +28,7 @@
       <file leaf-file-name="BitcoinECDSA.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="286" column="19" selection-start="8986" selection-end="8986" vertical-scroll-proportion="0.29226735" vertical-offset="4925" max-vertical-offset="5688">
+            <state line="20" column="46" selection-start="760" selection-end="760" vertical-scroll-proportion="-5.72346" vertical-offset="4727" max-vertical-offset="5490">
               <folding />
             </state>
           </provider>
@@ -205,7 +204,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="286" column="19" selection-start="8986" selection-end="8986" vertical-scroll-proportion="0.29226735" vertical-offset="4925" max-vertical-offset="5688">
+        <state line="20" column="46" selection-start="760" selection-end="760" vertical-scroll-proportion="-5.72346" vertical-offset="4727" max-vertical-offset="5490">
           <folding />
         </state>
       </provider>
