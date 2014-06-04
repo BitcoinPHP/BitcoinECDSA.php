@@ -30,11 +30,16 @@ for($i = 0; $i<250; $i++) {
 	}
 
 	$sxAddr =  exec("echo -n \"$privKey\" | sx addr");
+    	$addr   = $bitcoinECDSA->getAddress();
 	//echo "<i>".$sxAddr."</i><br/>";
 	//echo "<b>".$bitcoinECDSA->getAddress()."</b><br/>";
-	if($bitcoinECDSA->getAddress() != $sxAddr) {
+	if($addr != $sxAddr) {
 		throw new Exception('Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
 	}
+
+    if(!$bitcoinECDSA->validateAddress($addr)) {
+        throw new Exception('Something went wrong while validating address : ' . $addr . ' with private key : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
+    }
 
 	$ucSxPubKey = exec("echo -n \"$privKey\" | sx pubkey false",$output,$retval);
 	//uncompressed address and pubkey
