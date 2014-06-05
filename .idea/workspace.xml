@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.php" afterPath="$PROJECT_DIR$/test.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="BitcoinECDSA.php.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,10 +25,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BitcoinECDSA.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BitcoinECDSA.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="313" column="0" selection-start="9984" selection-end="9984" vertical-scroll-proportion="0.8520548" vertical-offset="5012" max-vertical-offset="5742">
+            <state line="276" column="7" selection-start="8916" selection-end="8916" vertical-scroll-proportion="-1.9666667" vertical-offset="4850" max-vertical-offset="5742">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="116" column="0" selection-start="2582" selection-end="2582" vertical-scroll-proportion="0.5930851" vertical-offset="1642" max-vertical-offset="2808">
               <folding />
             </state>
           </provider>
@@ -60,6 +67,7 @@
       <list>
         <option value="$PROJECT_DIR$/test.php" />
         <option value="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -159,14 +167,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="226" width="1756" height="934" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24971494" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24971494" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928312" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -221,7 +229,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="313" column="0" selection-start="9984" selection-end="9984" vertical-scroll-proportion="0.8520548" vertical-offset="5012" max-vertical-offset="5742">
+        <state line="276" column="7" selection-start="8916" selection-end="8916" vertical-scroll-proportion="-1.9666667" vertical-offset="4850" max-vertical-offset="5742">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="0" selection-start="2582" selection-end="2582" vertical-scroll-proportion="0.5930851" vertical-offset="1642" max-vertical-offset="2808">
           <folding />
         </state>
       </provider>
