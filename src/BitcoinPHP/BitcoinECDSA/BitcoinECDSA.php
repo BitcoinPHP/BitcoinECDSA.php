@@ -291,8 +291,22 @@ class BitcoinECDSA {
             return false;
     }
 
+    /***
+     * Tests if the Wif key (Wallet Import Format) is valid or not.
+     *
+     * @param {Base58} $wif
+     * @return bool
+     */
     public function validateWifKey($wif) {
-        //TODO
+
+        $key        = $this->base58_decode($wif, false);
+        $length     = strlen($key);
+        $firstSha256    = hash("sha256", hex2bin(substr($key, 0, $length - 8)));
+        $secondSha256   = hash("sha256", hex2bin($firstSha256));
+        if(substr($secondSha256, 0, 8) == substr($key, $length - 8, 8))
+            return true;
+        else
+            return false;
     }
 }
 

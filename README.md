@@ -107,6 +107,21 @@ $bitcoinECDSA->getUncompressedAddress();
 
 Returns the uncompressed Bitcoin Address.
 
+
+**Validate an address**
+
+```php
+$bitcoinECDSA->validateAddress();
+```
+
+
+**Validate an Wif key**
+
+```php
+$bitcoinECDSA->validateWifKey();
+```
+
+
 Licence
 ===============
 This is free and unencumbered software released into the public domain.
