@@ -16,6 +16,16 @@ class BitcoinECDSA {
 
         $this->G = array('x' => gmp_init("55066263022277343669578718895168534326250603453777594175500187360389116729240"),
             'y' => gmp_init("32670510020758816978083085130507043184471273380659243275938904335757337482424"));
+
+        $this->networkPrefix = "00"; //00 = main network, 6f = test network
+    }
+
+    public function setNetworkPrefix($prefix) {
+        $this->networkPrefix = $prefix;
+    }
+
+    public function getNetworkPrefix() {
+        return $this->networkPrefix;
     }
 
     public function base58_permutation($char, $reverse = false) {
@@ -226,7 +236,7 @@ class BitcoinECDSA {
 
         $sha256		= hash("sha256", hex2bin($address));
         $ripem160 	= hash("ripemd160", hex2bin($sha256));
-        $address 	= "00".$ripem160; //00 = main network, 6f = test network
+        $address 	= $this->getNetworkPrefix().$ripem160;
 
         //checksum
         $sha256		= hash("sha256", hex2bin($address));
