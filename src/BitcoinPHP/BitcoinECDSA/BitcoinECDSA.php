@@ -17,17 +17,34 @@ class BitcoinECDSA {
         $this->G = array('x' => gmp_init("55066263022277343669578718895168534326250603453777594175500187360389116729240"),
             'y' => gmp_init("32670510020758816978083085130507043184471273380659243275938904335757337482424"));
 
-        $this->networkPrefix = "00"; //00 = main network, 6f = test network
+        $this->networkPrefix = "00";
     }
 
+    /***
+     * Set the network prefix, "00" = main network, "6f" = test network.
+     *
+     * @param Hex $prefix
+     */
     public function setNetworkPrefix($prefix) {
         $this->networkPrefix = $prefix;
     }
 
+    /**
+     * Returns the current network prefix, "00" = main network, "6f" = test network.
+     *
+     * @return Hex
+     */
     public function getNetworkPrefix() {
         return $this->networkPrefix;
     }
 
+    /***
+     * Permutation table used for Base58 encoding and decoding.
+     *
+     * @param $char
+     * @param bool $reverse
+     * @return null
+     */
     public function base58_permutation($char, $reverse = false) {
         $table = array("1","2","3","4","5","6","7","8","9","A","B","C","D",
             "E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W",
@@ -50,6 +67,14 @@ class BitcoinECDSA {
             return null;
     }
 
+    /***
+     * encode a hexadecimal string in Base58.
+     *
+     * @param Hex $data
+     * @param bool $littleEndian
+     * @return Base58
+     * @throws Exception
+     */
     public function base58_encode($data, $littleEndian = true) {
         $res = "";
         $dataIntVal = gmp_init($data, 16);
@@ -81,6 +106,13 @@ class BitcoinECDSA {
             return $res.$leading;
     }
 
+    /***
+     * Decode a Base58 encoded string and returns it's value as a hexadecimal string
+     *
+     * @param $encodedData
+     * @param bool $littleEndian
+     * @return Hex
+     */
     public function base58_decode($encodedData, $littleEndian = true) {
         $res = gmp_init("0");
         $length = strlen($encodedData);
@@ -102,7 +134,12 @@ class BitcoinECDSA {
         return $res;
     }
 
-    //Wallet Import Format
+    /***
+     * returns the private key under the Wallet Import Format
+     *
+     * @return Base58
+     * @throws Exception
+     */
     public function getWif() {
 
         if(!isset($this->k))
@@ -117,6 +154,13 @@ class BitcoinECDSA {
         return strrev($this->base58_encode($secretKey));
     }
 
+    /***
+     * Computes the result of a point addition and returns the resulting point as an Array.
+     *
+     * @param $pt
+     * @return mixed
+     * @throws Exception
+     */
     public function doublePoint($pt) {
 
         $a = $this->a;
@@ -138,6 +182,14 @@ class BitcoinECDSA {
         return $nPt;
     }
 
+    /***
+     * Computes the result of a point addition and returns the resulting point as an Array.
+     *
+     * @param $pt1
+     * @param $pt2
+     * @return Array
+     * @throws Exception
+     */
     public function addPoints($pt1, $pt2) {
 
         $p = $this->p;
@@ -162,6 +214,13 @@ class BitcoinECDSA {
         return $nPt;
     }
 
+    /***
+     * Computes the result of a point multiplication and returns the resulting point as an Array.
+     *
+     * @param $k
+     * @param $pG
+     * @return Array
+     */
     public function mulPoint($k, $pG) {
         //in order to calculate k*G
         $k = gmp_init($k);
@@ -182,6 +241,12 @@ class BitcoinECDSA {
         return $lastPoint;
     }
 
+    /***
+     * returns the X and Y point coordinates of the public key.
+     *
+     * @return Array
+     * @throws Exception
+     */
     public function getPubKeyPoints() {
 
         $a = $this->a;
@@ -207,13 +272,23 @@ class BitcoinECDSA {
         return $pubKey;
     }
 
+    /***
+     * returns the uncompressed DER encoded public key.
+     *
+     * @return Hex
+     */
     public function getUncompressedPubKey() {
 
-        $pubKey			= $this->getPubKeyPoints();
+        $pubKey			    = $this->getPubKeyPoints();
         $uncompressedPubKey	= "04".$pubKey['x'].$pubKey['y'];
         return $uncompressedPubKey;
     }
 
+    /***
+     * returns the compressed DER encoded public key.
+     *
+     * @return Hex
+     */
     public function getPubKey() {
 
         $pubKey = $this->getPubKeyPoints();
@@ -225,6 +300,13 @@ class BitcoinECDSA {
         return $pubKey;
     }
 
+    /***
+     * returns the uncompressed Bitcoin address generated from the private key if $compressed is false and
+     * the compressed if $compressed is true.
+     *
+     * @param bool $compressed
+     * @return Base58
+     */
     public function getUncompressedAddress($compressed = false) {
 
         if($compressed) {
@@ -234,22 +316,33 @@ class BitcoinECDSA {
             $address 	= $this->getUncompressedPubKey();
         }
 
-        $sha256		= hash("sha256", hex2bin($address));
-        $ripem160 	= hash("ripemd160", hex2bin($sha256));
-        $address 	= $this->getNetworkPrefix().$ripem160;
+        $sha256		    = hash("sha256", hex2bin($address));
+        $ripem160 	    = hash("ripemd160", hex2bin($sha256));
+        $address 	    = $this->getNetworkPrefix().$ripem160;
 
         //checksum
-        $sha256		= hash("sha256", hex2bin($address));
-        $sha256		= hash("sha256", hex2bin($sha256));
-        $address 	= $address.substr($sha256, 0, 8);
+        $sha256		    = hash("sha256", hex2bin($address));
+        $sha256		    = hash("sha256", hex2bin($sha256));
+        $address 	    = $address.substr($sha256, 0, 8);
 
         return $this->base58_encode($address);
     }
 
+    /***
+     * returns the compressed Bitcoin address generated from the private key.
+     *
+     * @return Base58
+     */
     public function getAddress() {
         return $this->getUncompressedAddress(true);
     }
 
+    /***
+     * set a private key.
+     *
+     * @param Hex $k
+     * @throws Exception
+     */
     public function setPrivateKey($k) {
         //private key has to be passed as an hexadecimal number
         if(gmp_cmp(gmp_init($k, 16), gmp_sub($this->n, 1)) == 1)
@@ -259,11 +352,23 @@ class BitcoinECDSA {
         $this->k = $k;
     }
 
+    /***
+     * return the private key.
+     *
+     * @return Hex
+     */
     public function getPrivateKey() {
         return $this->k;
     }
 
-    //extra parameter can be some random data typed down by the user or mouse movements to add randomness
+
+    /***
+     * Generate a new random private key.
+     * The extra parameter can be some random data typed down by the user or mouse movements to add randomness.
+     *
+     * @param string $extra
+     * @throws Exception
+     */
     public function generateRandomPrivateKey($extra = 'FSQF5356dsdsqdfEFEQ3fq4q6dq4s5d') {
         //private key has to be passed as an hexadecimal number
         do { //generate a new random private key until to find one that is valid
@@ -282,7 +387,7 @@ class BitcoinECDSA {
     /***
      * Tests if the address is valid or not.
      *
-     * @param {Base58} $address
+     * @param Base58 $address
      * @return bool
      */
     public function validateAddress($address) {
@@ -304,13 +409,13 @@ class BitcoinECDSA {
     /***
      * Tests if the Wif key (Wallet Import Format) is valid or not.
      *
-     * @param {Base58} $wif
+     * @param Base58 $wif
      * @return bool
      */
     public function validateWifKey($wif) {
 
-        $key        = $this->base58_decode($wif, false);
-        $length     = strlen($key);
+        $key            = $this->base58_decode($wif, false);
+        $length         = strlen($key);
         $firstSha256    = hash("sha256", hex2bin(substr($key, 0, $length - 8)));
         $secondSha256   = hash("sha256", hex2bin($firstSha256));
         if(substr($secondSha256, 0, 8) == substr($key, $length - 8, 8))

@@ -29,7 +29,7 @@
       <file leaf-file-name="BitcoinECDSA.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="0" selection-start="790" selection-end="790" vertical-scroll-proportion="0.5178082" vertical-offset="0" max-vertical-offset="5922">
+            <state line="41" column="63" selection-start="1254" selection-end="1254" vertical-scroll-proportion="-8.690411" vertical-offset="7082" max-vertical-offset="7812">
               <folding />
             </state>
           </provider>
@@ -38,7 +38,7 @@
       <file leaf-file-name="README.md" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="110" column="23" selection-start="2534" selection-end="2534" vertical-scroll-proportion="-13.52" vertical-offset="1642" max-vertical-offset="2808">
+            <state line="110" column="23" selection-start="2534" selection-end="2534" vertical-scroll-proportion="0.0" vertical-offset="1642" max-vertical-offset="2808">
               <folding />
             </state>
           </provider>
@@ -74,8 +74,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="51" />
-    <option name="y" value="146" />
+    <option name="x" value="113" />
+    <option name="y" value="115" />
     <option name="width" value="1756" />
     <option name="height" value="934" />
   </component>
@@ -167,8 +167,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="51" y="146" width="1756" height="934" extended-state="0" />
-    <editor active="false" />
+    <frame x="113" y="115" width="1756" height="934" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -207,6 +207,27 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="67" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="5922">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="110" column="23" selection-start="2534" selection-end="2534" vertical-scroll-proportion="0.0" vertical-offset="1642" max-vertical-offset="2808">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="37" selection-start="1862" selection-end="1862" vertical-scroll-proportion="0.0" vertical-offset="864" max-vertical-offset="1530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="276" column="7" selection-start="8916" selection-end="8916" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5742">
@@ -251,14 +272,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="23" selection-start="2534" selection-end="2534" vertical-scroll-proportion="-13.52" vertical-offset="1642" max-vertical-offset="2808">
+        <state line="110" column="23" selection-start="2534" selection-end="2534" vertical-scroll-proportion="0.0" vertical-offset="1642" max-vertical-offset="2808">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="790" selection-end="790" vertical-scroll-proportion="0.5178082" vertical-offset="0" max-vertical-offset="5922">
+        <state line="41" column="63" selection-start="1254" selection-end="1254" vertical-scroll-proportion="-8.690411" vertical-offset="7082" max-vertical-offset="7812">
           <folding />
         </state>
       </provider>
