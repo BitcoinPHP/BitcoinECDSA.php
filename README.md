@@ -115,7 +115,7 @@ $bitcoinECDSA->validateAddress();
 ```
 
 
-**Validate an Wif key**
+**Validate a Wif key**
 
 ```php
 $bitcoinECDSA->validateWifKey();
