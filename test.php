@@ -16,12 +16,16 @@ $bitcoinECDSA->setPrivateKey($k);
 
 
 
-for($i = 0; $i<250; $i++) {
+for($i = 0; $i<100; $i++) {
 
 	$bitcoinECDSA->generateRandomPrivateKey();
 
 	//$bitcoinECDSA->setPrivateKey('4e5be7d3cd7685eb456e45a3c27352623bcf82fa195e77482a2297425e36e7cf');
-
+/*
+    $myPubKey = $bitcoinECDSA->getPubKeyPoints();
+    echo $bitcoinECDSA->calculateYWith($myPubKey['x'])."<br/>";
+    echo gmp_strval(gmp_mod(gmp_pow(gmp_init($myPubKey['y'],16),2),gmp_init("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F",16)),16)."<br/>";
+*/
 	$privKey = $bitcoinECDSA->getPrivateKey();
 	$sxPubKey = exec("echo -n \"$privKey\" | sx pubkey",$output,$retval);
 
