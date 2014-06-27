@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.php" afterPath="$PROJECT_DIR$/test.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BitcoinECDSA.php.iws" />
@@ -40,7 +38,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="5" selection-start="26" selection-end="26" vertical-scroll-proportion="0.06" vertical-offset="0" max-vertical-offset="600">
+            <state line="1" column="7" selection-start="21" selection-end="21" vertical-scroll-proportion="0.03" vertical-offset="0" max-vertical-offset="600">
               <folding />
             </state>
           </provider>
@@ -332,7 +330,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="5" selection-start="26" selection-end="26" vertical-scroll-proportion="0.06" vertical-offset="0" max-vertical-offset="600">
+        <state line="1" column="7" selection-start="21" selection-end="21" vertical-scroll-proportion="0.03" vertical-offset="0" max-vertical-offset="600">
           <folding />
         </state>
       </provider>
