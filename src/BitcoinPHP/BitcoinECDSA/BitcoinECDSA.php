@@ -369,7 +369,7 @@ class BitcoinECDSA
         return $lastPoint;
     }
 
-    public function calculateYWith($x)
+    public function calculateYWithX($x)
     {
         //@TODO
         $a  = $this->a;
