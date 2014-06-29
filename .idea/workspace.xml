@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/phpconfig.ini" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/junit.xml" afterPath="$PROJECT_DIR$/build/junit.xml" />
     </list>
     <ignored path="BitcoinECDSA.php.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,10 +26,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name=".travis.yml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name=".travis.yml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="46" selection-start="106" selection-end="106" vertical-scroll-proportion="0.19433199" vertical-offset="0" max-vertical-offset="741">
+            <state line="8" column="46" selection-start="106" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="252">
               <folding />
             </state>
           </provider>
@@ -46,19 +44,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BitcoinECDSATest.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php">
+      <file leaf-file-name="phpunit.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phpunit.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="36" selection-start="289" selection-end="289" vertical-scroll-proportion="-8.666667" vertical-offset="0" max-vertical-offset="936">
+            <state line="11" column="10" selection-start="387" selection-end="387" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="306">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="phpunit.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpunit.xml">
+      <file leaf-file-name="BitcoinECDSATest.php" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="10" selection-start="387" selection-end="387" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="306">
+            <state line="73" column="0" selection-start="46219" selection-end="46219" vertical-scroll-proportion="1.8744651" vertical-offset="0" max-vertical-offset="1548">
               <folding />
             </state>
           </provider>
@@ -146,9 +144,9 @@
         <option value="$PROJECT_DIR$/src/BitcoinPHP/Tests/BootStrap.php" />
         <option value="$PROJECT_DIR$/src/BitcoinPHP/Tests/Tests.php" />
         <option value="$PROJECT_DIR$/phpunit.xml" />
-        <option value="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" />
         <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/phpconfig.ini" />
+        <option value="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" />
       </list>
     </option>
   </component>
@@ -574,20 +572,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="36" selection-start="289" selection-end="289" vertical-scroll-proportion="-8.666667" vertical-offset="0" max-vertical-offset="936">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="583" column="32" selection-start="17347" selection-end="17347" vertical-scroll-proportion="-87.703705" vertical-offset="8126" max-vertical-offset="10908">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/phpconfig.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="108">
@@ -597,7 +581,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="46" selection-start="106" selection-end="106" vertical-scroll-proportion="0.19433199" vertical-offset="0" max-vertical-offset="741">
+        <state line="8" column="46" selection-start="106" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="252">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/BitcoinECDSA.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="583" column="32" selection-start="17347" selection-end="17347" vertical-scroll-proportion="3.3165267" vertical-offset="8126" max-vertical-offset="10908">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="0" selection-start="46219" selection-end="46219" vertical-scroll-proportion="1.8744651" vertical-offset="0" max-vertical-offset="1548">
           <folding />
         </state>
       </provider>

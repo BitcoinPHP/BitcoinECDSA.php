@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="All" tests="1" assertions="600" failures="0" errors="0" time="21.304453">
-    <testsuite name="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" tests="1" assertions="600" failures="0" errors="0" time="21.304453">
-      <testcase name="testAll" class="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" line="8" assertions="600" time="21.304453"/>
+  <testsuite name="All" tests="1" assertions="600" failures="0" errors="0" time="4.778961">
+    <testsuite name="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" tests="1" assertions="600" failures="0" errors="0" time="4.778961">
+      <testcase name="testAll" class="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" line="23" assertions="600" time="4.778961">
+        <system-out>Warning SX is not installed. 
+</system-out>
+      </testcase>
     </testsuite>
   </testsuite>
 </testsuites>
