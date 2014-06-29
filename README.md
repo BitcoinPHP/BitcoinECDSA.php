@@ -1,3 +1,4 @@
+![Build](https://travis-ci.org/BitcoinPHP/BitcoinECDSA.php.svg?branch=master)
 WARNING
 ===============
 
