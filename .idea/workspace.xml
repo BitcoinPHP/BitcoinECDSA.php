@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/Tests/BitcoinECDSATest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/junit.xml" afterPath="$PROJECT_DIR$/build/junit.xml" />
-    </list>
+    <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="" />
     <ignored path="BitcoinECDSA.php.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,8 +150,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="168" />
-    <option name="y" value="81" />
+    <option name="x" value="405" />
+    <option name="y" value="137" />
     <option name="width" value="1561" />
     <option name="height" value="913" />
   </component>
@@ -253,6 +251,10 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../cubbyhole-server" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Ignored.Files" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -285,7 +287,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="168" y="81" width="1561" height="913" extended-state="0" />
+    <frame x="405" y="137" width="1561" height="913" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
