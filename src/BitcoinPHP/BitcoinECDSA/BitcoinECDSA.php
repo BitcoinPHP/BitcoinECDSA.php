@@ -42,7 +42,7 @@ class BitcoinECDSA
     /**
      * Returns the current network prefix, '00' = main network, '6f' = test network.
      *
-     * @return Hex
+     * @return String Hex
      */
     public function getNetworkPrefix()
     {
@@ -131,7 +131,7 @@ class BitcoinECDSA
      *
      * @param $encodedData
      * @param bool $littleEndian
-     * @return Hex
+     * @return String Hex
      */
     public function base58_decode($encodedData, $littleEndian = true)
     {
@@ -581,7 +581,7 @@ class BitcoinECDSA
     /***
      * Tests if the Wif key (Wallet Import Format) is valid or not.
      *
-     * @param Base58 $wif
+     * @param String Base58 $wif
      * @return bool
      */
     public function validateWifKey($wif)
