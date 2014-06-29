@@ -5,6 +5,10 @@ namespace BitcoinPHP\BitcoinECDSA;
 
 class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
 {
+    private function sxFallback() {
+        //@TODO fallback test when SX is not installed on the system
+    }
+
     public function testAll()
     {
         $bitcoinECDSA = new BitcoinECDSA();
@@ -12,7 +16,6 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
         for($i = 0; $i<100; $i++) {
 
             $bitcoinECDSA->generateRandomPrivateKey();
-
 
             $privKey = $bitcoinECDSA->getPrivateKey();
             $sxPubKey = exec("echo -n \"$privKey\" | sx pubkey",$output,$retval);
