@@ -344,6 +344,7 @@ class BitcoinECDSA
      *
      * @param $k
      * @param Array $pG
+     * @throws \Exception
      * @return Array Point
      */
     public function mulPoint($k, Array $pG)
@@ -365,7 +366,8 @@ class BitcoinECDSA
                 $lastPoint = $this->doublePoint($lastPoint);
             }
         }
-
+        if(!$this->validatePoint(gmp_strval($lastPoint['x'], 16), gmp_strval($lastPoint['y'], 16)))
+            throw new \Exception('The resulting point is not on the curve.');
         return $lastPoint;
     }
 
@@ -393,7 +395,27 @@ class BitcoinECDSA
 
     public function validatePoint($x, $y)
     {
+        $a  = $this->a;
+        $b  = $this->b;
+        $p  = $this->p;
 
+        $x  = gmp_init($x, 16);
+        $y2 = gmp_mod(
+            gmp_add(
+                gmp_add(
+                    gmp_pow($x, 3),
+                    gmp_mul($a, $x)
+                ),
+                $b
+            ),
+            $p
+        );
+        $y = gmp_mod(gmp_pow(gmp_init($y, 16), 2), $p);
+
+        if(gmp_cmp($y2, $y) == 0)
+            return true;
+        else
+            return false;
     }
     /***
      * returns the X and Y point coordinates of the public key.
@@ -472,6 +494,7 @@ class BitcoinECDSA
      * the compressed if $compressed is true.
      *
      * @param bool $compressed
+     * @throws \Exception
      * @return String Base58
      */
     public function getUncompressedAddress($compressed = false)
@@ -491,8 +514,12 @@ class BitcoinECDSA
         $sha256		    = hash('sha256', hex2bin($address));
         $sha256		    = hash('sha256', hex2bin($sha256));
         $address 	    = $address.substr($sha256, 0, 8);
+        $address        = $this->base58_encode($address);
 
-        return $this->base58_encode($address);
+        if($this->validateAddress($address))
+            return $address;
+        else
+            throw new \Exception('the generated address seems not to be valid.');
     }
 
     /***
