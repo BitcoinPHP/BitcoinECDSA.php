@@ -1,4 +1,6 @@
-![Build](https://travis-ci.org/BitcoinPHP/BitcoinECDSA.php.svg?branch=master)
+![Build](https://travis-ci.org/BitcoinPHP/BitcoinECDSA.php.svg?branch=master) &nbsp;
+[![Latest Stable Version](https://poser.pugx.org/bitcoin-php/bitcoin-ecdsa/v/stable.svg)](https://packagist.org/packages/bitcoin-php/bitcoin-ecdsa) &nbsp;
+[![Total Downloads](https://poser.pugx.org/bitcoin-php/bitcoin-ecdsa/downloads.svg)](https://packagist.org/packages/bitcoin-php/bitcoin-ecdsa)
 WARNING
 ===============
 
