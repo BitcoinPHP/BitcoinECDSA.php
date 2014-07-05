@@ -236,10 +236,7 @@ class BitcoinECDSA
         $nPt['x'] = gmp_mod(
                             gmp_sub(
                                     gmp_sub(
-                                            gmp_pow(
-                                                    $slope,
-                                                    2
-                                            ),
+                                            gmp_pow($slope, 2),
                                             $pt['x']
                                     ),
                                     $pt['x']
@@ -310,10 +307,7 @@ class BitcoinECDSA
         $nPt['x']   = gmp_mod(
                               gmp_sub(
                                       gmp_sub(
-                                              gmp_pow(
-                                                      $slope,
-                                                      2
-                                              ),
+                                              gmp_pow($slope, 2),
                                               $pt1['x']
                                       ),
                                       $pt2['x']
@@ -382,7 +376,7 @@ class BitcoinECDSA
         $y2 = gmp_mod(
                       gmp_add(
                               gmp_add(
-                                      gmp_pow($x, 3),
+                                      gmp_powm($x, gmp_init(3, 10), $p),
                                       gmp_mul($a, $x)
                               ),
                               $b
@@ -403,7 +397,7 @@ class BitcoinECDSA
         $y2 = gmp_mod(
             gmp_add(
                 gmp_add(
-                    gmp_pow($x, 3),
+                    gmp_powm($x, gmp_init(3, 10), $p),
                     gmp_mul($a, $x)
                 ),
                 $b
