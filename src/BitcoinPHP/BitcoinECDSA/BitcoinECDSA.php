@@ -206,7 +206,7 @@ class BitcoinECDSA
         $gcd = gmp_strval(gmp_gcd(gmp_mul(gmp_init(2, 10), $pt['y'] ), $p));
         if($gcd != '1')
         {
-            throw new \Exception('This library doesn\'t yet supports point at infinity.');
+            throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
         }
 
         // SLOPE = (3 * ptX^2 + a )/( 2*ptY )
@@ -236,10 +236,7 @@ class BitcoinECDSA
         $nPt['x'] = gmp_mod(
                             gmp_sub(
                                     gmp_sub(
-                                            gmp_pow(
-                                                    $slope,
-                                                    2
-                                            ),
+                                            gmp_pow($slope, 2),
                                             $pt['x']
                                     ),
                                     $pt['x']
@@ -281,7 +278,7 @@ class BitcoinECDSA
             return $this->doublePoint($pt1);
         }
 
-        $gcd        = gmp_strval(gmp_gcd(gmp_sub($pt1['x'], $pt2['x']), $p));
+        $gcd = gmp_strval(gmp_gcd(gmp_sub($pt1['x'], $pt2['x']), $p));
         if($gcd != '1')
         {
             throw new \Exception('This library doesn\'t yet supports point at infinity.');
@@ -310,10 +307,7 @@ class BitcoinECDSA
         $nPt['x']   = gmp_mod(
                               gmp_sub(
                                       gmp_sub(
-                                              gmp_pow(
-                                                      $slope,
-                                                      2
-                                              ),
+                                              gmp_pow($slope, 2),
                                               $pt1['x']
                                       ),
                                       $pt2['x']
@@ -371,9 +365,54 @@ class BitcoinECDSA
         return $lastPoint;
     }
 
-    public function calculateYWithX($x)
+    /***
+     * Calculates the square root of $a mod p and returns the 2 solutions as an array.
+     *
+     * @param $a
+     * @return array|null
+     * @throws \Exception
+     */
+    public function sqrt($a)
     {
-        //@TODO
+        $p = $this->p;
+
+        if(gmp_legendre($a, $p) != 1)
+        {
+            //no result
+            return null;
+        }
+
+        if(gmp_strval(gmp_mod($p, gmp_init(4, 10)), 10) == 3)
+        {
+            $sqrt1 = gmp_powm(
+                            $a,
+                            gmp_div_q(
+                                gmp_add($p, gmp_init(1, 10)),
+                                gmp_init(4, 10)
+                            ),
+                            $p
+                    );
+            // there are always 2 results for a square root
+            // In an infinite number field you have -2^2 = 2^2 = 4
+            // In a finite number field you have a^2 = (p-a)^2
+            $sqrt2 = gmp_mod(gmp_sub($p, $sqrt1), $p);
+            return array($sqrt1, $sqrt2);
+        }
+        else
+        {
+            throw new \Exception('P % 4 != 3 , this isn\'t supported yet.');
+        }
+    }
+
+    /***
+     * Calculate the Y coordinates for a given X coordinate.
+     *
+     * @param $x
+     * @param null $derEvenOrOddCode
+     * @return array|null|String
+     */
+    public function calculateYWithX($x, $derEvenOrOddCode = null)
+    {
         $a  = $this->a;
         $b  = $this->b;
         $p  = $this->p;
@@ -382,7 +421,7 @@ class BitcoinECDSA
         $y2 = gmp_mod(
                       gmp_add(
                               gmp_add(
-                                      gmp_pow($x, 3),
+                                      gmp_powm($x, gmp_init(3, 10), $p),
                                       gmp_mul($a, $x)
                               ),
                               $b
@@ -390,9 +429,79 @@ class BitcoinECDSA
                       $p
               );
 
-        return gmp_strval($y2, 16);
+        $y = $this->sqrt($y2);
+        if(!$derEvenOrOddCode)
+        {
+            return $y;
+        }
+        else if($derEvenOrOddCode == '02') // even
+        {
+            $resY = null;
+            if(!gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+                $resY = gmp_strval($y[0], 16);
+            if(!gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+                $resY = gmp_strval($y[1], 16);
+            if($resY)
+            {
+                while(strlen($resY) < 64)
+                {
+                    $resY = '0' . $resY;
+                }
+
+            }
+            return $resY;
+        }
+        else if($derEvenOrOddCode == '03') // odd
+        {
+            $resY = null;
+            if(gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+                $resY = gmp_strval($y[0], 16);
+            if(gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+                $resY = gmp_strval($y[1], 16);
+            if($resY)
+            {
+                while(strlen($resY) < 64)
+                {
+                    $resY = '0' . $resY;
+                }
+
+            }
+            return $resY;
+        }
+
+        return null;
     }
 
+
+    public function getPubKeyPointsWithDerPubKey($derPubKey)
+    {
+        if(substr($derPubKey, 0, 2) == '04' && strlen($derPubKey) == 130)
+        {
+            //uncompressed der encoded public key
+            $x = substr($derPubKey, 2, 64);
+            $y = substr($derPubKey, 66, 64);
+            return array('x' => $x, 'y' => $y);
+        }
+        else if((substr($derPubKey, 0, 2) == '02' || substr($derPubKey, 0, 2) == '03') && strlen($derPubKey) == 66)
+        {
+            //compressed der encoded public key
+            $x = substr($derPubKey, 2, 64);
+            $y = $this->calculateYWithX($x, substr($derPubKey, 0, 2));
+            return array('x' => $x, 'y' => $y);
+        }
+        else
+        {
+            throw new \Exception('Invalid derPubKey format : ' . $derPubKey);
+        }
+    }
+
+    /***
+     * Returns true if the point is on the curve and false if it isn't.
+     *
+     * @param $x
+     * @param $y
+     * @return bool
+     */
     public function validatePoint($x, $y)
     {
         $a  = $this->a;
@@ -403,7 +512,7 @@ class BitcoinECDSA
         $y2 = gmp_mod(
             gmp_add(
                 gmp_add(
-                    gmp_pow($x, 3),
+                    gmp_powm($x, gmp_init(3, 10), $p),
                     gmp_mul($a, $x)
                 ),
                 $b
@@ -417,6 +526,7 @@ class BitcoinECDSA
         else
             return false;
     }
+
     /***
      * returns the X and Y point coordinates of the public key.
      *
@@ -481,7 +591,7 @@ class BitcoinECDSA
     {
         $pubKey = $this->getPubKeyPoints();
 
-        if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 0))) == 0)
+        if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) == 0)
             $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
         else
             $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
@@ -570,7 +680,7 @@ class BitcoinECDSA
     {
         //private key has to be passed as an hexadecimal number
         do { //generate a new random private key until to find one that is valid
-            $bytes      = openssl_random_pseudo_bytes(128, $cStrong);
+            $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
             $hex        = bin2hex($bytes);
             $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
             $this->k    = hash('sha256', $random);
