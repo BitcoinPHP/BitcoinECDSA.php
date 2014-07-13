@@ -15,6 +15,7 @@ class BitcoinECDSA
     public $p;
     public $n;
     public $G;
+    public $networkPrefix;
 
     public function __construct()
     {
@@ -206,8 +207,6 @@ class BitcoinECDSA
         $gcd = gmp_strval(gmp_gcd(gmp_mod(gmp_mul(gmp_init(2, 10), $pt['y']), $p),$p));
         if($gcd != '1')
         {
-            echo "ERR : ";
-            print_r($pt);
             throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
         }
 
@@ -238,6 +237,7 @@ class BitcoinECDSA
 
         // nPtX = slope^2 - 2 * ptX
         // Equals slope^2 - ptX - ptX
+        $nPt = array();
         $nPt['x'] = gmp_mod(
                             gmp_sub(
                                     gmp_sub(
@@ -309,6 +309,7 @@ class BitcoinECDSA
                       );
 
         // nPtX = slope^2 - ptX1 - ptX2
+        $nPt = array();
         $nPt['x']   = gmp_mod(
                               gmp_sub(
                                       gmp_sub(
