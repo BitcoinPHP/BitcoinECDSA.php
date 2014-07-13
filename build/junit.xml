@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
-  <testsuite name="All" tests="1" assertions="800" failures="0" errors="0" time="21.339146">
-    <testsuite name="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" tests="1" assertions="800" failures="0" errors="0" time="21.339146">
-      <testcase name="testAll" class="BitcoinPHP\BitcoinECDSA\BitcoinECDSATest" file="/var/www/2/vendor/BitcoinECDSA.php/src/BitcoinPHP/Tests/BitcoinECDSATest.php" line="22" assertions="800" time="21.339146"/>
-    </testsuite>
-  </testsuite>
-</testsuites>

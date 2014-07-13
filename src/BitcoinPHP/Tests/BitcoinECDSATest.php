@@ -86,6 +86,16 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             $ucDerPt    = $bitcoinECDSA->getPubKeyPointsWithDerPubKey($bpUcPubKey);
             $this->assertEquals($ucPt['y'], $cDerPt['y'], 'decoding of compressed DER public key failed');
             $this->assertEquals($ucPt['y'], $ucDerPt['y'], 'decoding of uncompressed DER public key failed');
+
+            $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
+            $bitcoinECDSA->checkSignaturePoints($bpPubKey, $pts['R'], $pts['S'], hash('sha256', 'hello'));
+            echo $bitcoinECDSA->signMessage('Hello');
+
+            echo "\n" . bin2hex(base64_decode('Gyk26Le4ER0EUvZiFGUCXhJKWVEoTtQNU449puYZPaiUmYyrcozt2LuAMgLvnEgpoF6cw8ob9Mj/CjP9ATydO1k='));
+
+            echo "\n\n" . hexdec("44") . "\n\n";
+            echo strlen(hex2bin("304402206d4af9af2db4aa2a91246a08634b753ce8bf08ab31100423f04b536b90fd6b7e022069dde74441fa42c523bbab37e3e69fa6352d6374f3263934f64142696a2f7bcc0102cc5fce405ccabf53ee2e466004004717e295117e717d4447bea2a1e55f3786cd"));
+            die();
         }
     }
 }

@@ -15,6 +15,7 @@ class BitcoinECDSA
     public $p;
     public $n;
     public $G;
+    public $networkPrefix;
 
     public function __construct()
     {
@@ -203,7 +204,7 @@ class BitcoinECDSA
         $a = $this->a;
         $p = $this->p;
 
-        $gcd = gmp_strval(gmp_gcd(gmp_mul(gmp_init(2, 10), $pt['y'] ), $p));
+        $gcd = gmp_strval(gmp_gcd(gmp_mod(gmp_mul(gmp_init(2, 10), $pt['y']), $p),$p));
         if($gcd != '1')
         {
             throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
@@ -214,9 +215,12 @@ class BitcoinECDSA
         $slope = gmp_mod(
                          gmp_mul(
                                  gmp_invert(
-                                            gmp_mul(
-                                                    gmp_init(2, 10),
-                                                    $pt['y']
+                                            gmp_mod(
+                                                    gmp_mul(
+                                                            gmp_init(2, 10),
+                                                            $pt['y']
+                                                    ),
+                                                    $p
                                             ),
                                             $p
                                  ),
@@ -233,6 +237,7 @@ class BitcoinECDSA
 
         // nPtX = slope^2 - 2 * ptX
         // Equals slope^2 - ptX - ptX
+        $nPt = array();
         $nPt['x'] = gmp_mod(
                             gmp_sub(
                                     gmp_sub(
@@ -281,7 +286,7 @@ class BitcoinECDSA
         $gcd = gmp_strval(gmp_gcd(gmp_sub($pt1['x'], $pt2['x']), $p));
         if($gcd != '1')
         {
-            throw new \Exception('This library doesn\'t yet supports point at infinity.');
+            throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
         }
 
         // SLOPE = (pt1Y - pt2Y)/( pt1X - pt2X )
@@ -304,6 +309,7 @@ class BitcoinECDSA
                       );
 
         // nPtX = slope^2 - ptX1 - ptX2
+        $nPt = array();
         $nPt['x']   = gmp_mod(
                               gmp_sub(
                                       gmp_sub(
@@ -336,15 +342,19 @@ class BitcoinECDSA
     /***
      * Computes the result of a point multiplication and returns the resulting point as an Array.
      *
-     * @param $k
+     * @param String Hex $k
      * @param Array $pG
+     * @param $base
      * @throws \Exception
      * @return Array Point
      */
-    public function mulPoint($k, Array $pG)
+    public function mulPoint($k, Array $pG, $base = null)
     {
         //in order to calculate k*G
-        $k = gmp_init($k);
+        if($base == 16 || $base == null || is_resource($base))
+            $k = gmp_init($k, 16);
+        if($base == 10)
+            $k = gmp_init($k, 10);
         $kBin = gmp_strval($k, 2);
 
         $lastPoint = $pG;
@@ -472,7 +482,13 @@ class BitcoinECDSA
         return null;
     }
 
-
+    /***
+     * returns the public key coordinates as an array.
+     *
+     * @param $derPubKey
+     * @return array
+     * @throws \Exception
+     */
     public function getPubKeyPointsWithDerPubKey($derPubKey)
     {
         if(substr($derPubKey, 0, 2) == '04' && strlen($derPubKey) == 130)
@@ -510,15 +526,15 @@ class BitcoinECDSA
 
         $x  = gmp_init($x, 16);
         $y2 = gmp_mod(
-            gmp_add(
-                gmp_add(
-                    gmp_powm($x, gmp_init(3, 10), $p),
-                    gmp_mul($a, $x)
-                ),
-                $b
-            ),
-            $p
-        );
+                        gmp_add(
+                            gmp_add(
+                                gmp_powm($x, gmp_init(3, 10), $p),
+                                gmp_mul($a, $x)
+                            ),
+                            $b
+                        ),
+                        $p
+                    );
         $y = gmp_mod(gmp_pow(gmp_init($y, 16), 2), $p);
 
         if(gmp_cmp($y2, $y) == 0)
@@ -546,8 +562,8 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        $pubKey 	    = $this->mulPoint(gmp_strval(gmp_init($k, 16)),
-                                          array('x'=>$G['x'], 'y'=>$G['y']),
+        $pubKey 	    = $this->mulPoint($k,
+                                          array('x' => $G['x'], 'y' => $G['y']),
                                           $a,
                                           $b,
                                           $p
@@ -731,6 +747,189 @@ class BitcoinECDSA
             return true;
         else
             return false;
+    }
+
+    /***
+     * Sign a hash with the private key that was set and returns signatures as an array (R,S)
+     *
+     * @param $hash
+     * @param null $nonce
+     * @throws \Exception
+     * @return Array
+     */
+    public function getSignatureHashPoints($hash, $nonce = null)
+    {
+
+        //please don't use for now
+        echo "please don't use for now, not working";
+
+        $p = $this->p;
+        $k = $this->k;
+
+        if(empty($k))
+        {
+            throw new \Exception('No Private Key was defined');
+        }
+
+        if(!$nonce)
+        {
+            $random     = openssl_random_pseudo_bytes(256, $cStrong);
+            $random     = $random . microtime(true).rand(100000000000, 1000000000000);
+            $nonce      = hash('sha256',$random);
+        }
+
+        //first part of the signature (R).
+
+        $rPt = $this->mulPoint($nonce, $this->G);
+        $R	= gmp_strval($rPt ['x'], 16);
+
+        while(strlen($R) < 64)
+        {
+            $R = '0' . $R;
+        }
+
+        //S = nonce^-1 (hash + privKey * R) mod p
+
+        $S = gmp_strval(
+                        gmp_mod(
+                                gmp_mul(
+                                        gmp_invert(
+                                                   gmp_init($nonce, 16),
+                                                   $p
+                                        ),
+                                        gmp_add(
+                                                gmp_init($hash, 16),
+                                                gmp_mul(
+                                                        gmp_init($k, 16),
+                                                        gmp_init($R, 16)
+                                                )
+                                        )
+                                ),
+                                $p
+                        ),
+                        16
+             );
+
+        if(strlen($S)%2)
+        {
+            $S = '0' . $S;
+        }
+
+        if(strlen($R)%2)
+        {
+            $R = '0' . $R;
+        }
+
+        return array('R' => $R, 'S' => $S);
+    }
+
+    /***
+     * Sign a hash with the private key that was set and returns a DER encoded signature
+     *
+     * @param $hash
+     * @param null $nonce
+     * @return string
+     */
+    public function signHash($hash, $nonce = null)
+    {
+        $points = $this->getSignatureHashPoints($hash, $nonce);
+
+        $signature = '02' . dechex(strlen(hex2bin($points['R']))) . $points['R'] . '02' . dechex(strlen(hex2bin($points['S']))) . $points['S'];
+        $signature = '30' . dechex(strlen(hex2bin($signature))) . $signature;
+
+        return $signature;
+    }
+
+    public function signMessage($message)
+    {
+
+        $points = $this->getSignatureHashPoints(hash('sha256', hash('sha256', $message)));
+
+        $R = $points['R'];
+        $S = $points['S'];
+
+        while(strlen($R) < 64)
+            $R = '0' . $R;
+
+        while(strlen($S) < 64)
+            $S = '0' . $S;
+
+
+        $res = "-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
+        $res .= $message;
+        $res .= "\n-----BEGIN SIGNATURE-----\n";
+        $res .= $this->getAddress()."\n";
+        $res .= base64_encode(hex2bin(dechex(27+4+3) . $R . $S));
+        $res .= "\n-----END BITCOIN SIGNED MESSAGE-----";
+
+        return $res;
+    }
+
+    public function getPubKeyWithRS($R, $S, $hash)
+    {
+
+    }
+
+    public function getPubKeyWithSignature($signature, $hash)
+    {
+
+    }
+
+    public function checkSignaturePoints($pubKey, $R, $S, $hash)
+    {
+        //please don't use for now
+        echo "please don't use for now, not working";
+        $p = $this->p;
+        $G = $this->G;
+
+        $pubKeyPts = $this->getPubKeyPointsWithDerPubKey($pubKey);
+
+        // S^-1* hash * G + S^-1 * R * Qa
+
+        // S^-1* hash
+        $exp1 =  gmp_strval(
+                            gmp_mul(
+                                    gmp_invert(
+                                               gmp_init($S, 16),
+                                               $p
+                                    ),
+                                    gmp_init($hash, 16)
+                            ),
+                            16
+                 );
+        // S^-1* hash * G
+        $exp1Pt = $this->mulPoint($exp1, $G);
+
+
+        // S^-1 * R
+        $exp2 =  gmp_strval(
+                            gmp_mul(
+                                    gmp_invert(
+                                               gmp_init($S, 16),
+                                               $p
+                                    ),
+                                    gmp_init($R, 16)
+                            ),
+                            16
+                 );
+        // S^-1 * R * Qa
+        echo "exp2 : " . $exp2 . "\n";
+
+        $pubKeyPts['x'] = gmp_init($pubKeyPts['x'], 16);
+        $pubKeyPts['y'] = gmp_init($pubKeyPts['y'], 16);
+
+        $exp2Pt = $this->mulPoint($exp2,$pubKeyPts);
+
+        $resultingPt = $this->addPoints($exp1Pt, $exp2Pt);
+
+        $xRes = gmp_strval($resultingPt['x'], 16);
+        echo "GOT : " . $xRes . "\n";
+        echo "Expected : " . $R;
+    }
+
+    public function checkSignatureForMessage($address, $signature, $message)
+    {
+
     }
 }
 
