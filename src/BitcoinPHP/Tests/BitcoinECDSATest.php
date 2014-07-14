@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @author Jan Moritz Lindemann
+ */
+
 namespace BitcoinPHP\BitcoinECDSA;
 
 

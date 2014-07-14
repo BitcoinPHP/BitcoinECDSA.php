@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @author Jan Moritz Lindemann
+ */
+
 namespace BitcoinPHP\BitcoinECDSA;
 
 if (!extension_loaded('gmp')) {
@@ -551,9 +556,6 @@ class BitcoinECDSA
      */
     public function getPubKeyPoints()
     {
-        $a = $this->a;
-        $b = $this->b;
-        $p = $this->p;
         $G = $this->G;
         $k = $this->k;
 
@@ -563,11 +565,8 @@ class BitcoinECDSA
         }
 
         $pubKey 	    = $this->mulPoint($k,
-                                          array('x' => $G['x'], 'y' => $G['y']),
-                                          $a,
-                                          $b,
-                                          $p
-                                  );
+                                          array('x' => $G['x'], 'y' => $G['y'])
+                                 );
 
         $pubKey['x']	= gmp_strval($pubKey['x'], 16);
         $pubKey['y']	= gmp_strval($pubKey['y'], 16);
@@ -775,7 +774,7 @@ class BitcoinECDSA
         {
             $random     = openssl_random_pseudo_bytes(256, $cStrong);
             $random     = $random . microtime(true).rand(100000000000, 1000000000000);
-            $nonce      = hash('sha256',$random);
+            $nonce      = gmp_strval(gmp_mod(gmp_init(hash('sha256',$random), 16), $p), 16);
         }
 
         //first part of the signature (R).
