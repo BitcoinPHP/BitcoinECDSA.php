@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae141db7-6eea-48ef-a9b5-a871cf62b768" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/BitcoinECDSA.php.iml" afterPath="$PROJECT_DIR$/.idea/BitcoinECDSA.php.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php" afterPath="$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/BitcoinECDSA.php.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/junit.xml" afterPath="" />
     </list>
     <ignored path="BitcoinECDSA.php.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,7 +41,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="5" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="252">
+            <state line="2" column="5" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="198">
               <folding />
             </state>
           </provider>
@@ -60,15 +60,6 @@
         <entry file="file://$PROJECT_DIR$/test.php">
           <provider selected="true" editor-type-id="text-editor">
             <state line="2" column="0" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="144">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tests.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="0" selection-start="215" selection-end="215" vertical-scroll-proportion="-0.0" vertical-offset="234" max-vertical-offset="1584">
               <folding />
             </state>
           </provider>
@@ -230,6 +221,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../vendor/BitcoinECDSA.php" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -258,7 +250,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="260" y="89" width="1480" height="943" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -318,13 +310,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="215" selection-end="215" vertical-scroll-proportion="0.0" vertical-offset="234" max-vertical-offset="1584">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/composer.lock">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="14" selection-start="652" selection-end="652" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="15156">
@@ -372,13 +357,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="26" selection-start="120" selection-end="120" vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="1584">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/composer.lock">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="14" selection-start="652" selection-end="652" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="15156">
@@ -426,13 +404,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="26" selection-start="120" selection-end="120" vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="1584">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/composer.lock">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="14" selection-start="652" selection-end="652" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="15156">
@@ -476,13 +447,6 @@
     <entry file="file://$PROJECT_DIR$/test.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="0" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="144">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="171" selection-end="171" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1584">
           <folding />
         </state>
       </provider>
@@ -530,13 +494,6 @@
     <entry file="file://$PROJECT_DIR$/test.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="0" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="144">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="171" selection-end="171" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1584">
           <folding />
         </state>
       </provider>
@@ -667,13 +624,6 @@
     <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="34" selection-start="187" selection-end="187" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="612">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BitcoinPHP/BitcoinECDSA/Tests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="215" selection-end="215" vertical-scroll-proportion="0.0" vertical-offset="234" max-vertical-offset="1584">
           <folding />
         </state>
       </provider>
