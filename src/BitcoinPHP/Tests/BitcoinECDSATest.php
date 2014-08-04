@@ -84,17 +84,21 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             $ucBpAddr = $bitcoinECDSA->getUncompressedAddress();
             $this->assertEquals($ucBpAddr, $ucSxAddr, 'Something went wrong for privateKey : ' . $bitcoinECDSA->getPrivateKey() . ', please report us the issue');
 
-            // test : calculate Y with X (decompress compressed public key)
-
             $ucPt       = $bitcoinECDSA->getPubKeyPoints();
             $cDerPt     = $bitcoinECDSA->getPubKeyPointsWithDerPubKey($bpPubKey);
             $ucDerPt    = $bitcoinECDSA->getPubKeyPointsWithDerPubKey($bpUcPubKey);
             $this->assertEquals($ucPt['y'], $cDerPt['y'], 'decoding of compressed DER public key failed');
             $this->assertEquals($ucPt['y'], $ucDerPt['y'], 'decoding of uncompressed DER public key failed');
 
+            // test : calculate Y with X (decompress compressed public key)
+
+            $bitcoinECDSA->setPrivateKey('b7a5e63a5da3df5c04b5be15734733205a45b751259f46d89471d4a8cd120929');
+
             $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
-            $bitcoinECDSA->checkSignaturePoints($bpPubKey, $pts['R'], $pts['S'], hash('sha256', 'hello'));
-            echo $bitcoinECDSA->signMessage('Hello');
+            $bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello'));
+            echo $bitcoinECDSA->signMessage('Hello', '1');
+            echo "\nSignature:\n";
+            print_r($bitcoinECDSA->getSignatureHashPoints(gmp_strval(gmp_init('968236873715988614170569073515315707566766479517',10),16), '1'));
 
             echo "\n" . bin2hex(base64_decode('Gyk26Le4ER0EUvZiFGUCXhJKWVEoTtQNU449puYZPaiUmYyrcozt2LuAMgLvnEgpoF6cw8ob9Mj/CjP9ATydO1k='));
 
