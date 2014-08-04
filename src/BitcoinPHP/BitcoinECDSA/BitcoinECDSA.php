@@ -36,6 +36,26 @@ class BitcoinECDSA
     }
 
     /***
+     * Convert a number to a compact Int
+     * taken from https://github.com/scintill/php-bitcoin-signature-routines/blob/master/verifymessage.php
+     *
+     * @param $i
+     * @return string
+     * @throws \Exception
+     */
+    public function numToVarIntString($i) {
+        if ($i < 0xfd) {
+            return chr($i);
+        } else if ($i <= 0xffff) {
+            return pack('Cv', 0xfd, $i);
+        } else if ($i <= 0xffffffff) {
+            return pack('CV', 0xfe, $i);
+        } else {
+            throw new \Exception('int too large');
+        }
+    }
+
+    /***
      * Set the network prefix, '00' = main network, '6f' = test network.
      *
      * @param String Hex $prefix
@@ -762,7 +782,7 @@ class BitcoinECDSA
         //please don't use for now
         echo "please don't use for now, not working";
 
-        $p = $this->p;
+        $n = $this->n;
         $k = $this->k;
 
         if(empty($k))
@@ -774,7 +794,7 @@ class BitcoinECDSA
         {
             $random     = openssl_random_pseudo_bytes(256, $cStrong);
             $random     = $random . microtime(true).rand(100000000000, 1000000000000);
-            $nonce      = gmp_strval(gmp_mod(gmp_init(hash('sha256',$random), 16), $p), 16);
+            $nonce      = gmp_strval(gmp_mod(gmp_init(hash('sha256',$random), 16), $n), 16);
         }
 
         //first part of the signature (R).
@@ -787,6 +807,7 @@ class BitcoinECDSA
             $R = '0' . $R;
         }
 
+        //second part of the signature (S).
         //S = nonce^-1 (hash + privKey * R) mod p
 
         $S = gmp_strval(
@@ -794,7 +815,7 @@ class BitcoinECDSA
                                 gmp_mul(
                                         gmp_invert(
                                                    gmp_init($nonce, 16),
-                                                   $p
+                                                   $n
                                         ),
                                         gmp_add(
                                                 gmp_init($hash, 16),
@@ -804,7 +825,7 @@ class BitcoinECDSA
                                                 )
                                         )
                                 ),
-                                $p
+                                $n
                         ),
                         16
              );
@@ -839,10 +860,11 @@ class BitcoinECDSA
         return $signature;
     }
 
-    public function signMessage($message)
+    public function signMessage($message, $nonce = null)
     {
 
-        $points = $this->getSignatureHashPoints(hash('sha256', hash('sha256', $message)));
+        $points = $this->getSignatureHashPoints(hash('sha256', hex2bin(hash('sha256',
+            "\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)). $message))), $nonce);
 
         $R = $points['R'];
         $S = $points['S'];
@@ -854,11 +876,12 @@ class BitcoinECDSA
             $S = '0' . $S;
 
 
-        $res = "-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
+        $res = "\n-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
         $res .= $message;
         $res .= "\n-----BEGIN SIGNATURE-----\n";
         $res .= $this->getAddress()."\n";
-        $res .= base64_encode(hex2bin(dechex(27+4+3) . $R . $S));
+        //todo 27 + 4 + 1 if Y is odd
+        $res .= base64_encode(hex2bin(dechex(27+4+0) . $R . $S));
         $res .= "\n-----END BITCOIN SIGNED MESSAGE-----";
 
         return $res;
@@ -871,7 +894,7 @@ class BitcoinECDSA
 
     public function getPubKeyWithSignature($signature, $hash)
     {
-
+        //will call getPubKeyWithRS
     }
 
     public function checkSignaturePoints($pubKey, $R, $S, $hash)
