@@ -1,4 +1,8 @@
 composer.phar
 vendor
+<<<<<<< HEAD
+.idea
+=======
 .idea
 
+>>>>>>> 3237547ecaa95376d460d1fd6910cdfbc92c2281
