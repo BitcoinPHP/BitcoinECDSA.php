@@ -111,6 +111,17 @@ class BitcoinECDSA
     }
 
     /***
+     * Bitcoin standard 256 bit hash function : double sha256
+     *
+     * @param $data
+     * @return string
+     */
+    public function hash256($data)
+    {
+        return hash('sha256', hex2bin(hash('sha256', $data)));
+    }
+
+    /***
      * encode a hexadecimal string in Base58.
      *
      * @param String Hex $data
@@ -465,16 +476,18 @@ class BitcoinECDSA
               );
 
         $y = $this->sqrt($y2);
+
         if(!$derEvenOrOddCode)
         {
             return $y;
         }
+
         else if($derEvenOrOddCode == '02') // even
         {
             $resY = null;
-            if(!gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+            if(false == gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
                 $resY = gmp_strval($y[0], 16);
-            if(!gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+            if(false == gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
                 $resY = gmp_strval($y[1], 16);
             if($resY)
             {
@@ -489,9 +502,9 @@ class BitcoinECDSA
         else if($derEvenOrOddCode == '03') // odd
         {
             $resY = null;
-            if(gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+            if(true == gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
                 $resY = gmp_strval($y[0], 16);
-            if(gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+            if(true == gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
                 $resY = gmp_strval($y[1], 16);
             if($resY)
             {
@@ -860,11 +873,14 @@ class BitcoinECDSA
         return $signature;
     }
 
-    public function signMessage($message, $nonce = null)
+    public function signMessage($message, $compressed = true, $nonce = null)
     {
 
-        $points = $this->getSignatureHashPoints(hash('sha256', hex2bin(hash('sha256',
-            "\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)). $message))), $nonce);
+        $hash = $this->hash256("\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)). $message);
+        $points = $this->getSignatureHashPoints(
+                                                $hash,
+                                                $nonce
+                   );
 
         $R = $points['R'];
         $S = $points['S'];
@@ -875,20 +891,110 @@ class BitcoinECDSA
         while(strlen($S) < 64)
             $S = '0' . $S;
 
-
         $res = "\n-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
         $res .= $message;
         $res .= "\n-----BEGIN SIGNATURE-----\n";
-        $res .= $this->getAddress()."\n";
-        //todo 27 + 4 + 1 if Y is odd
+        $res .= $this->getAddress() . "\n";
+
+        for($i = 0; $i < 4; $i++)
+        {
+            $flag = 27;
+            if(true == $compressed)
+                $flag += 4;
+            $flag += $i;
+            echo "\nReal pubKey : \n";
+            print_r($this->getPubKeyPoints());
+            echo "\nRecovered PubKey : \n";
+            print_r($this->getPubKeyWithRS($flag, $R, $S, $hash));
+        }
+
         $res .= base64_encode(hex2bin(dechex(27+4+0) . $R . $S));
         $res .= "\n-----END BITCOIN SIGNED MESSAGE-----";
 
         return $res;
     }
 
-    public function getPubKeyWithRS($R, $S, $hash)
+    /***
+     * extract the public key from the signature and using the recovery flag.
+     * see http://crypto.stackexchange.com/a/18106/10927
+     * based on https://github.com/brainwallet/brainwallet.github.io/blob/master/js/bitcoinsig.js
+     * possible public keys are r−1(sR−zG) and r−1(sR′−zG)
+     * Recovery flag rules are :
+     * binary number between 28 and 35 inclusive
+     * if the flag is > 30 then the address is compressed.
+     *
+     * @param $flag
+     * @param $R
+     * @param $S
+     * @param $hash
+     * @return array
+     */
+    public function getPubKeyWithRS($flag, $R, $S, $hash)
     {
+
+        echo "\nR = $R\n";
+        echo "\nS = $S\n";
+        echo "\nHASH = $hash\n";
+
+        if ($flag < 27 || $flag >= 35)
+            return false;
+
+        $isCompressed = false;
+        if($flag >= 31)
+        {
+            $flag -= 4;
+            $isCompressed = true;
+        }
+
+        $recid = $flag - 27;
+
+        //step 1.1
+        $x = null;
+        $x = gmp_add(
+                     gmp_init($R, 16),
+                     gmp_mul(
+                             $this->n,
+                             gmp_div_q( //check if j is equal to 0 or to 1.
+                                        gmp_init($recid, 10),
+                                        gmp_init(2, 10)
+                             )
+                     )
+             );
+
+
+        echo "\nX = " . gmp_strval($x, 16) . "\n";
+
+        //step 1.3
+        $y = null;
+        if(1 == $flag % 2) //check if y is even.
+            $y = gmp_init($this->calculateYWithX(gmp_strval($x, 16), '02'), 16);
+        else
+            $y = gmp_init($this->calculateYWithX(gmp_strval($x, 16), '03'), 16);
+
+        $Rpt = array('x' => $x, 'y' => $y);
+
+        //step 1.6.1
+        //calculate r^-1 (S*Rpt - eG)
+
+        $GNeg = $this->G;
+        $GNeg['y'] = gmp_sub($this->p, $GNeg['y']);
+        $eG = $this->mulPoint($hash, $GNeg);
+
+        $SR = $this->mulPoint($S, $Rpt);
+
+        $pubKey = $this->mulPoint(
+                            gmp_strval(gmp_invert(gmp_init($R, 16), $this->p), 16),
+                            $this->addPoints(
+                                             $SR,
+                                             $eG
+                            )
+                  );
+
+        $pubKey['x'] = gmp_strval($pubKey['x'], 16);
+        $pubKey['y'] = gmp_strval($pubKey['y'], 16);
+        return $pubKey;
+
+        //return false;
 
     }
 
