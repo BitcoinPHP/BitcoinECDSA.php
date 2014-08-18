@@ -933,7 +933,7 @@ class BitcoinECDSA
         }
 
         //echo "Final flag : " . dechex($finalFlag) . "\n";
-        if(0 == $flag)
+        if(0 == $finalFlag)
         {
             throw new \Exception('Unable to get a valid signature flag.');
         }
