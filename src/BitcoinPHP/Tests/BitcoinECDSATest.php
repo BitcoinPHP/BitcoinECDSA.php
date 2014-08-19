@@ -93,17 +93,23 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             // test : calculate Y with X (decompress compressed public key)
 
             $bitcoinECDSA->setPrivateKey('b7a5e63a5da3df5c04b5be15734733205a45b751259f46d89471d4a8cd120929');
+            $bitcoinECDSA->generateRandomPrivateKey();
+            $bitcoinECDSA->setPrivateKey('5d60f0259a57094daacf21dbe408f43176a2e00cc6057fad030d928df833755e');
+
+            echo "\nprivate key : " . $bitcoinECDSA->getPrivateKey() . "\n";
+            $nonce = hash('sha256', rand(0,10000000) . microtime());
+            $nonce = '0910f9897f4e8524646d1e1caa53177d66dd5d8cfed01eabfb1b4b3810fb8f32';
+            echo "\nnonce : " . $nonce . "\n";
 
             $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
-            $bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello'));
-            echo $bitcoinECDSA->signMessage('Hello', '1');
+            echo "Check pts signature \n";
+            print_r($bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello')));
+            echo "\nEND";
+            echo $bitcoinECDSA->signMessage('Hello', true, $nonce);
             echo "\nSignature:\n";
             print_r($bitcoinECDSA->getSignatureHashPoints(gmp_strval(gmp_init('968236873715988614170569073515315707566766479517',10),16), '1'));
 
             echo "\n" . bin2hex(base64_decode('Gyk26Le4ER0EUvZiFGUCXhJKWVEoTtQNU449puYZPaiUmYyrcozt2LuAMgLvnEgpoF6cw8ob9Mj/CjP9ATydO1k='));
-
-            echo "\n\n" . hexdec("44") . "\n\n";
-            echo strlen(hex2bin("304402206d4af9af2db4aa2a91246a08634b753ce8bf08ab31100423f04b536b90fd6b7e022069dde74441fa42c523bbab37e3e69fa6352d6374f3263934f64142696a2f7bcc0102cc5fce405ccabf53ee2e466004004717e295117e717d4447bea2a1e55f3786cd"));
             die();
         }
     }
