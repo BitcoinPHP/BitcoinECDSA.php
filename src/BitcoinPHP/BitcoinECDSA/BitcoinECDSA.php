@@ -500,7 +500,6 @@ class BitcoinECDSA
                 {
                     $resY = '0' . $resY;
                 }
-
             }
             return $resY;
         }
@@ -517,7 +516,6 @@ class BitcoinECDSA
                 {
                     $resY = '0' . $resY;
                 }
-
             }
             return $resY;
         }
@@ -551,6 +549,24 @@ class BitcoinECDSA
         else
         {
             throw new \Exception('Invalid derPubKey format : ' . $derPubKey);
+        }
+    }
+
+
+    public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
+    {
+        if(true == $compressed)
+        {
+            return '04' . $pubKey['x'] . $pubKey['y'];
+        }
+        else
+        {
+            if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) == 0)
+                $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
+            else
+                $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
+
+            return $pubKey;
         }
     }
 
@@ -804,7 +820,7 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        if(!$nonce)
+        if(null == $nonce)
         {
             $random     = openssl_random_pseudo_bytes(256, $cStrong);
             $random     = $random . microtime(true).rand(100000000000, 1000000000000);
@@ -966,11 +982,9 @@ class BitcoinECDSA
         if ($flag < 27 || $flag >= 35)
             return false;
 
-        $isCompressed = false;
-        if($flag >= 31)
+        if($flag >= 31) //if address is compressed
         {
             $flag -= 4;
-            $isCompressed = true;
         }
 
         $recid = $flag - 27;
@@ -1028,24 +1042,24 @@ class BitcoinECDSA
         $pubKey['x'] = gmp_strval($pubKey['x'], 16);
         $pubKey['y'] = gmp_strval($pubKey['y'], 16);
 
-        //@TODO verifiy signature
+        while(strlen($pubKey['x']) < 64)
+            $pubKey['x'] = '0' . $pubKey['x'];
 
-        return $pubKey;
+        while(strlen($pubKey['y']) < 64)
+            $pubKey['y'] = '0' . $pubKey['y'];
 
-        //return false;
+        $derPubKey = $this->getDerPubKeyWithPubKeyPoints($pubKey, false);
 
-    }
 
-    public function getPubKeyWithSignature($signature, $hash)
-    {
-        //will call getPubKeyWithRS
+        if($this->checkSignaturePoints($derPubKey, $R, $S, $hash))
+            return $pubKey;
+        else
+            return false;
+
     }
 
     public function checkSignaturePoints($pubKey, $R, $S, $hash)
     {
-        //please don't use for now
-        echo "please don't use for now, not working";
-        $p = $this->p;
         $G = $this->G;
 
         $pubKeyPts = $this->getPubKeyPointsWithDerPubKey($pubKey);
@@ -1057,12 +1071,13 @@ class BitcoinECDSA
                             gmp_mul(
                                     gmp_invert(
                                                gmp_init($S, 16),
-                                               $p
+                                               $this->n
                                     ),
                                     gmp_init($hash, 16)
                             ),
                             16
                  );
+
         // S^-1* hash * G
         $exp1Pt = $this->mulPoint($exp1, $G);
 
@@ -1072,14 +1087,13 @@ class BitcoinECDSA
                             gmp_mul(
                                     gmp_invert(
                                                gmp_init($S, 16),
-                                               $p
+                                                $this->n
                                     ),
                                     gmp_init($R, 16)
                             ),
                             16
                  );
         // S^-1 * R * Qa
-        echo "exp2 : " . $exp2 . "\n";
 
         $pubKeyPts['x'] = gmp_init($pubKeyPts['x'], 16);
         $pubKeyPts['y'] = gmp_init($pubKeyPts['y'], 16);
@@ -1089,13 +1103,24 @@ class BitcoinECDSA
         $resultingPt = $this->addPoints($exp1Pt, $exp2Pt);
 
         $xRes = gmp_strval($resultingPt['x'], 16);
-        echo "GOT : " . $xRes . "\n";
-        echo "Expected : " . $R;
+
+        while(strlen($xRes) < 64)
+            $xRes = '0' . $xRes;
+
+        if($xRes == $R)
+            return true;
+        else
+            return false;
+    }
+
+    public function checkSignatureForRawMessage($message)
+    {
+        //@TODO parse the message
     }
 
     public function checkSignatureForMessage($address, $signature, $message)
     {
-
+        //@TODO
     }
 }
 
