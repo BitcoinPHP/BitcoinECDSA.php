@@ -673,16 +673,24 @@ class BitcoinECDSA
      * the compressed if $compressed is true.
      *
      * @param bool $compressed
+     * @param string $derPubKey
      * @throws \Exception
      * @return String Base58
      */
-    public function getUncompressedAddress($compressed = false)
+    public function getUncompressedAddress($compressed = false, $derPubKey = null)
     {
-        if($compressed) {
-            $address 	= $this->getPubKey();
+        if(null != $derPubKey)
+        {
+            $address = $derPubKey;
         }
-        else {
-            $address 	= $this->getUncompressedPubKey();
+        else
+        {
+            if($compressed) {
+                $address 	= $this->getPubKey();
+            }
+            else {
+                $address 	= $this->getUncompressedPubKey();
+            }
         }
 
         $sha256		    = hash('sha256', hex2bin($address));
@@ -704,11 +712,12 @@ class BitcoinECDSA
     /***
      * returns the compressed Bitcoin address generated from the private key.
      *
+     * @param string $derPubKey
      * @return String Base58
      */
-    public function getAddress()
+    public function getAddress($derPubKey = null)
     {
-        return $this->getUncompressedAddress(true);
+        return $this->getUncompressedAddress(true, $derPubKey);
     }
 
     /***
@@ -891,7 +900,7 @@ class BitcoinECDSA
     }
 
     /***
-     * Satoshi client standard message signature implementation.
+     * Satoshi client's standard message signature implementation.
      *
      * @param $message
      * @param bool $compressed
@@ -937,12 +946,11 @@ class BitcoinECDSA
             //echo "\nReal pubKey : \n";
             //print_r($pubKeyPts);
 
-            $recoveredPubKeyPts = $this->getPubKeyWithRS($flag, $R, $S, $hash);
+            $recoveredPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
             //echo "\nRecovered PubKey : \n";
-            //print_r($recoveredPubKeyPts);
+            //print_r($recoveredPubKey);
 
-            if($pubKeyPts['x'] == $recoveredPubKeyPts['x']
-               && $pubKeyPts['y'] == $recoveredPubKeyPts['y'])
+            if($this->getDerPubKeyWithPubKeyPoints($pubKeyPts, $compressed) == $recoveredPubKey)
             {
                 $finalFlag = $flag;
             }
@@ -979,11 +987,14 @@ class BitcoinECDSA
     public function getPubKeyWithRS($flag, $R, $S, $hash)
     {
 
+        $isCompressed = false;
+
         if ($flag < 27 || $flag >= 35)
             return false;
 
         if($flag >= 31) //if address is compressed
         {
+            $isCompressed = true;
             $flag -= 4;
         }
 
@@ -1048,16 +1059,25 @@ class BitcoinECDSA
         while(strlen($pubKey['y']) < 64)
             $pubKey['y'] = '0' . $pubKey['y'];
 
-        $derPubKey = $this->getDerPubKeyWithPubKeyPoints($pubKey, false);
+        $derPubKey = $this->getDerPubKeyWithPubKeyPoints($pubKey, $isCompressed);
 
 
         if($this->checkSignaturePoints($derPubKey, $R, $S, $hash))
-            return $pubKey;
+            return $derPubKey;
         else
             return false;
 
     }
 
+    /***
+     * Check signature with public key R & S values of the signature and the message hash.
+     *
+     * @param $pubKey
+     * @param $R
+     * @param $S
+     * @param $hash
+     * @return bool
+     */
     public function checkSignaturePoints($pubKey, $R, $S, $hash)
     {
         $G = $this->G;
@@ -1113,14 +1133,59 @@ class BitcoinECDSA
             return false;
     }
 
-    public function checkSignatureForRawMessage($message)
+
+    public function checkDerSignature($pubKey, $signature, $hash)
     {
-        //@TODO parse the message
+        //@TODO check Der signature
     }
 
-    public function checkSignatureForMessage($address, $signature, $message)
+    /***
+     * checks the signature of a bitcoin signed message.
+     *
+     * @param $rawMessage
+     * @return bool
+     */
+    public function checkSignatureForRawMessage($rawMessage)
     {
-        //@TODO
+        //recover message.
+        preg_match_all("#-----BEGIN BITCOIN SIGNED MESSAGE-----\n(.{0,})\n-----BEGIN SIGNATURE-----\n#USi", $rawMessage, $out);
+        $message = $out[1][0];
+
+        preg_match_all("#\n-----BEGIN SIGNATURE-----\n(.{0,})\n(.{0,})\n-----END BITCOIN SIGNED MESSAGE-----#USi", $rawMessage, $out);
+        $address = $out[1][0];
+        $signature = $out[2][0];
+
+        return $this->checkSignatureForMessage($address, $signature, $message);
+    }
+
+    /***
+     * checks the signature of a bitcoin signed message.
+     *
+     * @param $address
+     * @param $encodedSignature
+     * @param $message
+     * @return bool
+     */
+    public function checkSignatureForMessage($address, $encodedSignature, $message)
+    {
+        $hash = $this->hash256("\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)) . $message);
+
+        //recover flag
+        $signature = base64_decode($encodedSignature);
+
+        $flag = dechex(bin2hex(substr($signature, 0, 1)));
+
+        $R = bin2hex(substr($signature, 1, 64));
+        $S = bin2hex(substr($signature, 65, 64));
+
+        $derPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
+
+        $recoveredAddress = $this->getAddress($derPubKey);
+
+        if($address == $recoveredAddress)
+            return true;
+        else
+            return false;
     }
 }
 

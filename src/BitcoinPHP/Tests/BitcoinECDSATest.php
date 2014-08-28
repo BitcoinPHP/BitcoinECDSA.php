@@ -97,19 +97,24 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             $bitcoinECDSA->setPrivateKey('5d60f0259a57094daacf21dbe408f43176a2e00cc6057fad030d928df833755e');
 
             echo "\nprivate key : " . $bitcoinECDSA->getPrivateKey() . "\n";
-            $nonce = hash('sha256', rand(0,10000000) . microtime());
-            $nonce = '0910f9897f4e8524646d1e1caa53177d66dd5d8cfed01eabfb1b4b3810fb8f32';
-            echo "\nnonce : " . $nonce . "\n";
+            //$nonce = hash('sha256', rand(0,10000000) . microtime());
+            //$nonce = '0910f9897f4e8524646d1e1caa53177d66dd5d8cfed01eabfb1b4b3810fb8f32';
+            //echo "\nnonce : " . $nonce . "\n";
 
             $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
             echo "Check pts signature \n";
             print_r($bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello')));
             echo "\nEND";
-            echo $bitcoinECDSA->signMessage('Hello', true, $nonce);
+            $signedMessage = $bitcoinECDSA->signMessage('Hello');
+            echo $signedMessage."\n";
             echo "\nSignature:\n";
             print_r($bitcoinECDSA->getSignatureHashPoints(gmp_strval(gmp_init('968236873715988614170569073515315707566766479517',10),16), '1'));
 
             echo "\n" . bin2hex(base64_decode('Gyk26Le4ER0EUvZiFGUCXhJKWVEoTtQNU449puYZPaiUmYyrcozt2LuAMgLvnEgpoF6cw8ob9Mj/CjP9ATydO1k='));
+
+            // test : signed message is valid
+            $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage($signedMessage));
+
             die();
         }
     }
