@@ -43,6 +43,9 @@ class BitcoinECDSA
      * @return string
      * @throws \Exception
      */
+    /**
+     * @param integer $i
+     */
     public function numToVarIntString($i) {
         if ($i < 0xfd) {
             return chr($i);
@@ -82,6 +85,9 @@ class BitcoinECDSA
      * @param bool $reverse
      * @return null
      */
+    /**
+     * @param string $char
+     */
     public function base58_permutation($char, $reverse = false)
     {
         $table = array('1','2','3','4','5','6','7','8','9','A','B','C','D',
@@ -116,6 +122,9 @@ class BitcoinECDSA
      * @param $data
      * @return string
      */
+    /**
+     * @param string $data
+     */
     public function hash256($data)
     {
         return hash('sha256', hex2bin(hash('sha256', $data)));
@@ -128,6 +137,9 @@ class BitcoinECDSA
      * @param bool $littleEndian
      * @return String Base58
      * @throws \Exception
+     */
+    /**
+     * @param string $data
      */
     public function base58_encode($data, $littleEndian = true)
     {
@@ -418,6 +430,9 @@ class BitcoinECDSA
      * @return array|null
      * @throws \Exception
      */
+    /**
+     * @param resource $a
+     */
     public function sqrt($a)
     {
         $p = $this->p;
@@ -456,6 +471,9 @@ class BitcoinECDSA
      * @param $x
      * @param null $derEvenOrOddCode
      * @return array|null|String
+     */
+    /**
+     * @param string $x
      */
     public function calculateYWithX($x, $derEvenOrOddCode = null)
     {
@@ -576,6 +594,10 @@ class BitcoinECDSA
      * @param $x
      * @param $y
      * @return bool
+     */
+    /**
+     * @param string $x
+     * @param string $y
      */
     public function validatePoint($x, $y)
     {
@@ -777,6 +799,9 @@ class BitcoinECDSA
      * @param String Base58 $address
      * @return bool
      */
+    /**
+     * @param string $address
+     */
     public function validateAddress($address)
     {
         $address    = hex2bin($this->base58_decode($address));
@@ -798,6 +823,9 @@ class BitcoinECDSA
      *
      * @param String Base58 $wif
      * @return bool
+     */
+    /**
+     * @param string $wif
      */
     public function validateWifKey($wif)
     {
@@ -889,6 +917,9 @@ class BitcoinECDSA
      * @param null $nonce
      * @return string
      */
+    /**
+     * @param string $hash
+     */
     public function signHash($hash, $nonce = null)
     {
         $points = $this->getSignatureHashPoints($hash, $nonce);
@@ -907,6 +938,9 @@ class BitcoinECDSA
      * @param null $nonce
      * @return string
      * @throws \Exception
+     */
+    /**
+     * @param string $message
      */
     public function signMessage($message, $compressed = true, $nonce = null)
     {
@@ -983,6 +1017,11 @@ class BitcoinECDSA
      * @param $S
      * @param $hash
      * @return array
+     */
+    /**
+     * @param string $R
+     * @param string $S
+     * @param string $hash
      */
     public function getPubKeyWithRS($flag, $R, $S, $hash)
     {
@@ -1141,6 +1180,11 @@ class BitcoinECDSA
      * @param $hash
      * @return bool
      */
+    /**
+     * @param string $pubKey
+     * @param string $signature
+     * @param string $hash
+     */
     public function checkDerSignature($pubKey, $signature, $hash)
     {
         $signature = hex2bin($signature);
@@ -1170,6 +1214,9 @@ class BitcoinECDSA
      * @param $rawMessage
      * @return bool
      */
+    /**
+     * @param string $rawMessage
+     */
     public function checkSignatureForRawMessage($rawMessage)
     {
         //recover message.
@@ -1190,6 +1237,9 @@ class BitcoinECDSA
      * @param $encodedSignature
      * @param $message
      * @return bool
+     */
+    /**
+     * @param string $encodedSignature
      */
     public function checkSignatureForMessage($address, $encodedSignature, $message)
     {
