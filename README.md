@@ -115,8 +115,9 @@ Returns the uncompressed Bitcoin Address.
 **Validate an address**
 
 ```php
-$bitcoinECDSA->validateAddress();
+$bitcoinECDSA->validateAddress($address);
 ```
+Returns true if the address is valid and false if it isn't
 
 
 **Validate a Wif key**
@@ -124,6 +125,46 @@ $bitcoinECDSA->validateAddress();
 ```php
 $bitcoinECDSA->validateWifKey();
 ```
+Returns true if the WIF key is valid and false if it isn't
+
+
+Signatures
+===============
+
+**Sign a message**
+
+```php
+$bitcoinECDSA->signMessage('message');
+```
+
+Returns a satoshi client standard signed message.
+
+
+**verify a message**
+
+```php
+$bitcoinECDSA->checkSignatureForRawMessage($signedMessage);
+```
+
+Returns true if the signature is matching the address and false if it isn't.
+
+
+**sign a sha256 hash**
+
+```php
+$bitcoinECDSA->signHash($hash);
+```
+
+Returns a DER encoded hexadecimal signature.
+
+
+**verify a signature**
+
+```php
+$bitcoinECDSA->checkDerSignature($pubKey, $signature, $hash)
+```
+
+Returns true if the signature is matching the public key and false if it isn't.
 
 
 Licence
