@@ -115,6 +115,12 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             // test : signed message is valid
             $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage($signedMessage));
 
+            // test : DER signature
+            $hash = hash('sha256', rand(0,10000000) . microtime());
+            $signature = $bitcoinECDSA->signHash($hash);
+
+            $this->assertTrue($bitcoinECDSA->checkDerSignature($bitcoinECDSA->getPubKey(), $signature, $hash));
+
             die();
         }
     }
