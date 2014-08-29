@@ -1133,10 +1133,35 @@ class BitcoinECDSA
             return false;
     }
 
-
+    /***
+     * checkSignaturePoints wrapper for DER signatures
+     *
+     * @param $pubKey
+     * @param $signature
+     * @param $hash
+     * @return bool
+     */
     public function checkDerSignature($pubKey, $signature, $hash)
     {
-        //@TODO check Der signature
+        $signature = hex2bin($signature);
+        if('30' != bin2hex(substr($signature, 0, 1)))
+            return false;
+
+        $RLength = hexdec(bin2hex(substr($signature, 3, 1)));
+        $R = bin2hex(substr($signature, 4, $RLength));
+
+        $SLength = hexdec(bin2hex(substr($signature, $RLength + 5, 1)));
+        $S = bin2hex(substr($signature, $RLength + 6, $SLength));
+
+        //echo "\n\nsignature:\n";
+        //print_r(bin2hex($signature));
+
+        //echo "\n\nR:\n";
+        //print_r($R);
+        //echo "\n\nS:\n";
+        //print_r($S);
+
+        return $this->checkSignaturePoints($pubKey, $R, $S, $hash);
     }
 
     /***
@@ -1173,7 +1198,7 @@ class BitcoinECDSA
         //recover flag
         $signature = base64_decode($encodedSignature);
 
-        $flag = dechex(bin2hex(substr($signature, 0, 1)));
+        $flag = hexdec(bin2hex(substr($signature, 0, 1)));
 
         $R = bin2hex(substr($signature, 1, 64));
         $S = bin2hex(substr($signature, 65, 64));
