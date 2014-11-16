@@ -15,7 +15,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "ext-gmp": "*"
     },
     "autoload": {
         "psr-0": {
