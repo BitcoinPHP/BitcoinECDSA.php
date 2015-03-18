@@ -555,7 +555,7 @@ class BitcoinECDSA
 
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
-        if(true == $compressed)
+        if(true != $compressed)
         {
             return '04' . $pubKey['x'] . $pubKey['y'];
         }
