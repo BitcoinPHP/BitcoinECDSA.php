@@ -555,7 +555,7 @@ class BitcoinECDSA
 
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
-        if(true == $compressed)
+        if(true != $compressed)
         {
             return '04' . $pubKey['x'] . $pubKey['y'];
         }
@@ -1200,8 +1200,8 @@ class BitcoinECDSA
 
         $flag = hexdec(bin2hex(substr($signature, 0, 1)));
 
-        $R = bin2hex(substr($signature, 1, 64));
-        $S = bin2hex(substr($signature, 65, 64));
+        $R = bin2hex(substr($signature, 1, 32));
+        $S = bin2hex(substr($signature, 33, 64));
 
         $derPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
 
