@@ -1,7 +1,6 @@
 [![Build](https://travis-ci.org/BitcoinPHP/BitcoinECDSA.php.svg?branch=master)](https://travis-ci.org/BitcoinPHP/BitcoinECDSA.php) &nbsp;
 [![Quality Score](https://scrutinizer-ci.com/g/BitcoinPHP/BitcoinECDSA.php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/BitcoinPHP/BitcoinECDSA.php/?branch=master) &nbsp;
 [![Latest Stable Version](https://poser.pugx.org/bitcoin-php/bitcoin-ecdsa/v/stable.svg)](https://packagist.org/packages/bitcoin-php/bitcoin-ecdsa) &nbsp;
-[![Total Downloads](https://poser.pugx.org/bitcoin-php/bitcoin-ecdsa/downloads.svg)](https://packagist.org/packages/bitcoin-php/bitcoin-ecdsa)
 [![Downloads](http://img.shields.io/packagist/dt/bitcoin-php/bitcoin-ecdsa.svg?style=flat)](https://packagist.org/packages/bitcoin-php/bitcoin-ecdsa)
 WARNING
 ===============
