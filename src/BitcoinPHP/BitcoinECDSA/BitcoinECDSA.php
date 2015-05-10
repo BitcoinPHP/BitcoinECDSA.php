@@ -1127,7 +1127,7 @@ class BitcoinECDSA
         while(strlen($xRes) < 64)
             $xRes = '0' . $xRes;
 
-        if($xRes == $R)
+        if(strtoupper($xRes) == strtoupper($R))
             return true;
         else
             return false;
