@@ -14,7 +14,7 @@ REQUIREMENTS
 
 *php5-gmp* needs to be installed.
 
-If you want to launch the test file you need to be under a unix system with libbitoin intalled on it.
+If you want to launch the test file you need to be under a unix system with libbitcoin intalled on it.
 
 USAGE
 ===============
