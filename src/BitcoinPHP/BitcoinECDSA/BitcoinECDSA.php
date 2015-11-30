@@ -130,6 +130,25 @@ class BitcoinECDSA
         return hash('ripemd160', hex2bin(hash('sha256', $data)));
     }
 
+    /**
+     * @param string $extra
+     * @return string Hex
+     * @throws \Exception
+     */
+    public function generateRandom256BitsHexaString($extra = 'FkejkzqesrfeifH3ioio9hb55sdssdsdfOO:ss')
+    {
+        $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
+        $hex        = bin2hex($bytes);
+        $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
+
+        if(!$cStrong)
+        {
+            throw new \Exception('Your system is not able to generate strong enough random numbers');
+        }
+
+        return $this->hash256($random);
+    }
+
     /***
      * encode a hexadecimal string in Base58.
      *
@@ -761,15 +780,7 @@ class BitcoinECDSA
     {
         //private key has to be passed as an hexadecimal number
         do { //generate a new random private key until to find one that is valid
-            $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
-            $hex        = bin2hex($bytes);
-            $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
-            $this->k    = hash('sha256', $random);
-
-            if(!$cStrong)
-            {
-                throw new \Exception('Your system is not able to generate strong enough random numbers');
-            }
+            $this->k    = $this->generateRandom256BitsHexaString($extra);
 
         } while(gmp_cmp(gmp_init($this->k, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1);
     }
@@ -831,9 +842,12 @@ class BitcoinECDSA
 
         if(null == $nonce)
         {
-            $random     = openssl_random_pseudo_bytes(256, $cStrong);
-            $random     = $random . microtime(true).rand(100000000000, 1000000000000);
-            $nonce      = gmp_strval(gmp_mod(gmp_init(hash('sha256',$random), 16), $n), 16);
+            $nonce      = gmp_strval(
+                                     gmp_mod(
+                                             gmp_init($this->generateRandom256BitsHexaString(), 16),
+                                             $n),
+                                     16
+            );
         }
 
         //first part of the signature (R).
