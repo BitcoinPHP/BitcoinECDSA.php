@@ -121,6 +121,15 @@ class BitcoinECDSA
         return hash('sha256', hex2bin(hash('sha256', $data)));
     }
 
+    /**
+     * @param $data
+     * @return string
+     */
+    public function hash160($data)
+    {
+        return hash('ripemd160', hex2bin(hash('sha256', $data)));
+    }
+
     /***
      * encode a hexadecimal string in Base58.
      *
@@ -221,9 +230,7 @@ class BitcoinECDSA
 
         $k              = $this->k;
         $secretKey      = '80' . $k;
-        $firstSha256    = hash('sha256', hex2bin($secretKey));
-        $secondSha256   = hash('sha256', hex2bin($firstSha256));
-        $secretKey     .= substr($secondSha256, 0, 8);
+        $secretKey     .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
 
         return strrev($this->base58_encode($secretKey));
     }
@@ -693,14 +700,10 @@ class BitcoinECDSA
             }
         }
 
-        $sha256		    = hash('sha256', hex2bin($address));
-        $ripem160 	    = hash('ripemd160', hex2bin($sha256));
-        $address 	    = $this->getNetworkPrefix() . $ripem160;
+        $address 	    = $this->getNetworkPrefix() . $this->hash160(hex2bin($address));
 
         //checksum
-        $sha256		    = hash('sha256', hex2bin($address));
-        $sha256		    = hash('sha256', hex2bin($sha256));
-        $address 	    = $address.substr($sha256, 0, 8);
+        $address 	    = $address.substr($this->hash256(hex2bin($address)), 0, 8);
         $address        = $this->base58_encode($address);
 
         if($this->validateAddress($address))
@@ -784,10 +787,8 @@ class BitcoinECDSA
             return false;
         $checksum   = substr($address, 21, 4);
         $rawAddress = substr($address, 0, 21);
-        $sha256		= hash('sha256', $rawAddress);
-        $sha256		= hash('sha256', hex2bin($sha256));
 
-        if(substr(hex2bin($sha256), 0, 4) == $checksum)
+        if(substr(hex2bin($this->hash256($rawAddress)), 0, 4) == $checksum)
             return true;
         else
             return false;
@@ -803,9 +804,8 @@ class BitcoinECDSA
     {
         $key            = $this->base58_decode($wif, false);
         $length         = strlen($key);
-        $firstSha256    = hash('sha256', hex2bin(substr($key, 0, $length - 8)));
-        $secondSha256   = hash('sha256', hex2bin($firstSha256));
-        if(substr($secondSha256, 0, 8) == substr($key, $length - 8, 8))
+        $checksum    = $this->hash256(hex2bin(substr($key, 0, $length - 8)));
+        if(substr($checksum, 0, 8) == substr($key, $length - 8, 8))
             return true;
         else
             return false;
