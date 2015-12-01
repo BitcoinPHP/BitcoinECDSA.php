@@ -581,7 +581,7 @@ class BitcoinECDSA
 
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
-        if(true == $compressed)
+        if($compressed == false)
         {
             return '04' . $pubKey['x'] . $pubKey['y'];
         }
@@ -667,12 +667,15 @@ class BitcoinECDSA
     /***
      * returns the uncompressed DER encoded public key.
      *
-     * @return String Hex
+     * @param array $pubKeyPts
+     * @return string
+     * @throws \Exception
      */
-    public function getUncompressedPubKey()
+    public function getUncompressedPubKey(array $pubKeyPts = array())
     {
-        $pubKey			    = $this->getPubKeyPoints();
-        $uncompressedPubKey	= '04' . $pubKey['x'] . $pubKey['y'];
+        if(empty($pubKeyPts))
+            $pubKeyPts = $this->getPubKeyPoints();
+        $uncompressedPubKey	= '04' . $pubKeyPts['x'] . $pubKeyPts['y'];
 
         return $uncompressedPubKey;
     }
@@ -680,18 +683,21 @@ class BitcoinECDSA
     /***
      * returns the compressed DER encoded public key.
      *
-     * @return String Hex
+     * @param array $pubKeyPts
+     * @return array|string
+     * @throws \Exception
      */
-    public function getPubKey()
+    public function getPubKey(array $pubKeyPts = array())
     {
-        $pubKey = $this->getPubKeyPoints();
+        if(empty($pubKeyPts))
+            $pubKeyPts = $this->getPubKeyPoints();
 
-        if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) == 0)
-            $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
+        if(gmp_strval(gmp_mod(gmp_init($pubKeyPts['y'], 16), gmp_init(2, 10))) == 0)
+            $compressedPubKey  	= '02' . $pubKeyPts['x'];	//if $pubKey['y'] is even
         else
-            $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
+            $compressedPubKey  	= '03' . $pubKeyPts['x'];	//if $pubKey['y'] is odd
 
-        return $pubKey;
+        return $compressedPubKey;
     }
 
     /***
@@ -707,7 +713,12 @@ class BitcoinECDSA
     {
         if(null != $derPubKey)
         {
-            $address = $derPubKey;
+            if($compressed) {
+                $address    = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
+            else {
+                $address    = $this->getUncompressedPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
         }
         else
         {
@@ -1214,12 +1225,21 @@ class BitcoinECDSA
 
         $flag = hexdec(bin2hex(substr($signature, 0, 1)));
 
-        $R = bin2hex(substr($signature, 1, 64));
-        $S = bin2hex(substr($signature, 65, 64));
+        $isCompressed = false;
+        if($flag >= 31 & $flag < 35) //if address is compressed
+        {
+            $isCompressed = true;
+        }
+
+        $R = bin2hex(substr($signature, 1, 32));
+        $S = bin2hex(substr($signature, 33, 32));
 
         $derPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
 
-        $recoveredAddress = $this->getAddress($derPubKey);
+        if($isCompressed == true)
+            $recoveredAddress = $this->getAddress($derPubKey);
+        else
+            $recoveredAddress = $this->getUncompressedAddress(false, $derPubKey);
 
         if($address == $recoveredAddress)
             return true;

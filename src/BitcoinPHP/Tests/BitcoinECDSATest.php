@@ -103,6 +103,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
 
             $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
             echo "Check pts signature \n";
+            print_r($bitcoinECDSA->getPubKey());
             print_r($bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello')));
             echo "\nEND";
             $signedMessage = $bitcoinECDSA->signMessage('Hello');
@@ -115,6 +116,14 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             // test : signed message is valid
             $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage($signedMessage));
 
+            $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage("-----BEGIN BITCOIN SIGNED MESSAGE-----
+This is an example of a signed message.
+-----BEGIN SIGNATURE-----
+1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN
+G+ckNQLD26XRplYry7VqEoIS1O1U5c/qCrppiJjK8G2CtBIHZ+NDj9FLR/ojezD5Geyfv5sOSLWZAMO7y6YBmIs=
+-----END BITCOIN SIGNED MESSAGE-----"));
+
+            echo $signedMessage;
             // test : DER signature
             $hash = hash('sha256', rand(0,10000000) . microtime());
             $signature = $bitcoinECDSA->signHash($hash);
