@@ -24,7 +24,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
      * Test validateAddress and validate WIF key functions
      *
      */
-    public function testAll()
+    public function testBlock()
     {
         $bitcoinECDSA = new BitcoinECDSA();
 
@@ -35,7 +35,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             echo "Warning SX is not installed. \n";
             $expectedRes = $this->sxFallback();
         }
-        for($i = 0; $i<100; $i++)
+        for($i = 0; $i<10; $i++)
         {
 
             if(!$expectedRes)
@@ -103,6 +103,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
 
             $pts = $bitcoinECDSA->getSignatureHashPoints(hash('sha256', 'hello'));
             echo "Check pts signature \n";
+            print_r($bitcoinECDSA->getPubKey());
             print_r($bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello')));
             echo "\nEND";
             $signedMessage = $bitcoinECDSA->signMessage('Hello');
@@ -115,14 +116,42 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             // test : signed message is valid
             $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage($signedMessage));
 
+
+
+            echo $signedMessage;
             // test : DER signature
             $hash = hash('sha256', rand(0,10000000) . microtime());
             $signature = $bitcoinECDSA->signHash($hash);
 
             $this->assertTrue($bitcoinECDSA->checkDerSignature($bitcoinECDSA->getPubKey(), $signature, $hash));
 
-            die();
         }
+    }
+
+    public function testVerifySignedMessages()
+    {
+        $bitcoinECDSA = new BitcoinECDSA();
+
+        $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage("-----BEGIN BITCOIN SIGNED MESSAGE-----
+This is an example of a signed message.
+-----BEGIN SIGNATURE-----
+1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN
+G+ckNQLD26XRplYry7VqEoIS1O1U5c/qCrppiJjK8G2CtBIHZ+NDj9FLR/ojezD5Geyfv5sOSLWZAMO7y6YBmIs=
+-----END BITCOIN SIGNED MESSAGE-----"));
+
+        $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage("-----BEGIN BITCOIN SIGNED MESSAGE-----
+oho
+-----BEGIN SIGNATURE-----
+1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN
+G9NVTo1N2vbNEVNYGgobMwwuZuUb0jWvytoRd92qfckoBjhlkTbDQehADRXOWWqHGexxWcPGmub0CPdcEC+0Rbs=
+-----END BITCOIN SIGNED MESSAGE-----"));
+
+        $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage("-----BEGIN BITCOIN SIGNED MESSAGE-----
+aha
+-----BEGIN SIGNATURE-----
+1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN
+HJoQp4rhjY5wd4NyhSVUMy4EY+9npgOnXzro+l5ibkSBfA/p6JjkfUuvlnc8As6tw4eOIhtp2BN81xw/El9bpIg=
+-----END BITCOIN SIGNED MESSAGE-----"));
     }
 }
 ?>

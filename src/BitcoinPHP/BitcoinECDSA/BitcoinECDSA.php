@@ -121,6 +121,34 @@ class BitcoinECDSA
         return hash('sha256', hex2bin(hash('sha256', $data)));
     }
 
+    /**
+     * @param $data
+     * @return string
+     */
+    public function hash160($data)
+    {
+        return hash('ripemd160', hex2bin(hash('sha256', $data)));
+    }
+
+    /**
+     * @param string $extra
+     * @return string Hex
+     * @throws \Exception
+     */
+    public function generateRandom256BitsHexaString($extra = 'FkejkzqesrfeifH3ioio9hb55sdssdsdfOO:ss')
+    {
+        $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
+        $hex        = bin2hex($bytes);
+        $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
+
+        if(!$cStrong)
+        {
+            throw new \Exception('Your system is not able to generate strong enough random numbers');
+        }
+
+        return $this->hash256($random);
+    }
+
     /***
      * encode a hexadecimal string in Base58.
      *
@@ -221,9 +249,7 @@ class BitcoinECDSA
 
         $k              = $this->k;
         $secretKey      = '80' . $k;
-        $firstSha256    = hash('sha256', hex2bin($secretKey));
-        $secondSha256   = hash('sha256', hex2bin($firstSha256));
-        $secretKey     .= substr($secondSha256, 0, 8);
+        $secretKey     .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
 
         return strrev($this->base58_encode($secretKey));
     }
@@ -555,7 +581,7 @@ class BitcoinECDSA
 
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
-        if(true != $compressed)
+        if($compressed == false)
         {
             return '04' . $pubKey['x'] . $pubKey['y'];
         }
@@ -641,12 +667,15 @@ class BitcoinECDSA
     /***
      * returns the uncompressed DER encoded public key.
      *
-     * @return String Hex
+     * @param array $pubKeyPts
+     * @return string
+     * @throws \Exception
      */
-    public function getUncompressedPubKey()
+    public function getUncompressedPubKey(array $pubKeyPts = array())
     {
-        $pubKey			    = $this->getPubKeyPoints();
-        $uncompressedPubKey	= '04' . $pubKey['x'] . $pubKey['y'];
+        if(empty($pubKeyPts))
+            $pubKeyPts = $this->getPubKeyPoints();
+        $uncompressedPubKey	= '04' . $pubKeyPts['x'] . $pubKeyPts['y'];
 
         return $uncompressedPubKey;
     }
@@ -654,18 +683,21 @@ class BitcoinECDSA
     /***
      * returns the compressed DER encoded public key.
      *
-     * @return String Hex
+     * @param array $pubKeyPts
+     * @return array|string
+     * @throws \Exception
      */
-    public function getPubKey()
+    public function getPubKey(array $pubKeyPts = array())
     {
-        $pubKey = $this->getPubKeyPoints();
+        if(empty($pubKeyPts))
+            $pubKeyPts = $this->getPubKeyPoints();
 
-        if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) == 0)
-            $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
+        if(gmp_strval(gmp_mod(gmp_init($pubKeyPts['y'], 16), gmp_init(2, 10))) == 0)
+            $compressedPubKey  	= '02' . $pubKeyPts['x'];	//if $pubKey['y'] is even
         else
-            $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
+            $compressedPubKey  	= '03' . $pubKeyPts['x'];	//if $pubKey['y'] is odd
 
-        return $pubKey;
+        return $compressedPubKey;
     }
 
     /***
@@ -681,7 +713,12 @@ class BitcoinECDSA
     {
         if(null != $derPubKey)
         {
-            $address = $derPubKey;
+            if($compressed) {
+                $address    = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
+            else {
+                $address    = $this->getUncompressedPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
         }
         else
         {
@@ -693,14 +730,10 @@ class BitcoinECDSA
             }
         }
 
-        $sha256		    = hash('sha256', hex2bin($address));
-        $ripem160 	    = hash('ripemd160', hex2bin($sha256));
-        $address 	    = $this->getNetworkPrefix() . $ripem160;
+        $address 	    = $this->getNetworkPrefix() . $this->hash160(hex2bin($address));
 
         //checksum
-        $sha256		    = hash('sha256', hex2bin($address));
-        $sha256		    = hash('sha256', hex2bin($sha256));
-        $address 	    = $address.substr($sha256, 0, 8);
+        $address 	    = $address.substr($this->hash256(hex2bin($address)), 0, 8);
         $address        = $this->base58_encode($address);
 
         if($this->validateAddress($address))
@@ -758,15 +791,7 @@ class BitcoinECDSA
     {
         //private key has to be passed as an hexadecimal number
         do { //generate a new random private key until to find one that is valid
-            $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
-            $hex        = bin2hex($bytes);
-            $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
-            $this->k    = hash('sha256', $random);
-
-            if(!$cStrong)
-            {
-                throw new \Exception('Your system is not able to generate strong enough random numbers');
-            }
+            $this->k    = $this->generateRandom256BitsHexaString($extra);
 
         } while(gmp_cmp(gmp_init($this->k, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1);
     }
@@ -784,10 +809,8 @@ class BitcoinECDSA
             return false;
         $checksum   = substr($address, 21, 4);
         $rawAddress = substr($address, 0, 21);
-        $sha256		= hash('sha256', $rawAddress);
-        $sha256		= hash('sha256', hex2bin($sha256));
 
-        if(substr(hex2bin($sha256), 0, 4) == $checksum)
+        if(substr(hex2bin($this->hash256($rawAddress)), 0, 4) == $checksum)
             return true;
         else
             return false;
@@ -803,9 +826,8 @@ class BitcoinECDSA
     {
         $key            = $this->base58_decode($wif, false);
         $length         = strlen($key);
-        $firstSha256    = hash('sha256', hex2bin(substr($key, 0, $length - 8)));
-        $secondSha256   = hash('sha256', hex2bin($firstSha256));
-        if(substr($secondSha256, 0, 8) == substr($key, $length - 8, 8))
+        $checksum    = $this->hash256(hex2bin(substr($key, 0, $length - 8)));
+        if(substr($checksum, 0, 8) == substr($key, $length - 8, 8))
             return true;
         else
             return false;
@@ -831,9 +853,12 @@ class BitcoinECDSA
 
         if(null == $nonce)
         {
-            $random     = openssl_random_pseudo_bytes(256, $cStrong);
-            $random     = $random . microtime(true).rand(100000000000, 1000000000000);
-            $nonce      = gmp_strval(gmp_mod(gmp_init(hash('sha256',$random), 16), $n), 16);
+            $nonce      = gmp_strval(
+                                     gmp_mod(
+                                             gmp_init($this->generateRandom256BitsHexaString(), 16),
+                                             $n),
+                                     16
+            );
         }
 
         //first part of the signature (R).
@@ -1200,12 +1225,21 @@ class BitcoinECDSA
 
         $flag = hexdec(bin2hex(substr($signature, 0, 1)));
 
+        $isCompressed = false;
+        if($flag >= 31 & $flag < 35) //if address is compressed
+        {
+            $isCompressed = true;
+        }
+
         $R = bin2hex(substr($signature, 1, 32));
-        $S = bin2hex(substr($signature, 33, 64));
+        $S = bin2hex(substr($signature, 33, 32));
 
         $derPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
 
-        $recoveredAddress = $this->getAddress($derPubKey);
+        if($isCompressed == true)
+            $recoveredAddress = $this->getAddress($derPubKey);
+        else
+            $recoveredAddress = $this->getUncompressedAddress(false, $derPubKey);
 
         if($address == $recoveredAddress)
             return true;
