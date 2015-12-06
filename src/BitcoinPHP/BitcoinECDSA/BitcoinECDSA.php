@@ -150,7 +150,7 @@ class BitcoinECDSA
             }
             $res = $this->hash256($random);
 
-        } while(gmp_cmp(gmp_init($res, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1); // make sure the generate string is smaller than n
+        } while(gmp_cmp(gmp_init($res, 16), gmp_sub($this->n, gmp_init(1, 10))) === 1); // make sure the generate string is smaller than n
 
         return $res;
     }
@@ -181,10 +181,10 @@ class BitcoinECDSA
 
         //get number of leading zeros
         $leading = '';
-        $i=0;
-        while(substr($data, $i, 1) == '0')
+        $i = 0;
+        while(substr($data, $i, 1) === '0')
         {
-            if($i!= 0 && $i%2)
+            if($i!== 0 && $i%2)
             {
                 $leading .= '1';
             }
@@ -226,13 +226,13 @@ class BitcoinECDSA
 
         $res = gmp_strval($res, 16);
         $i = $length - 1;
-        while(substr($encodedData, $i, 1) == '1')
+        while(substr($encodedData, $i, 1) === '1')
         {
             $res = '00' . $res;
             $i--;
         }
 
-        if(strlen($res)%2 != 0)
+        if(strlen($res)%2 !== 0)
         {
             $res = '0' . $res;
         }
@@ -273,7 +273,7 @@ class BitcoinECDSA
         $p = $this->p;
 
         $gcd = gmp_strval(gmp_gcd(gmp_mod(gmp_mul(gmp_init(2, 10), $pt['y']), $p),$p));
-        if($gcd != '1')
+        if($gcd !== '1')
         {
             throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
         }
@@ -346,13 +346,13 @@ class BitcoinECDSA
     public function addPoints(Array $pt1, Array $pt2)
     {
         $p = $this->p;
-        if(gmp_cmp($pt1['x'], $pt2['x']) == 0  && gmp_cmp($pt1['y'], $pt2['y']) == 0) //if identical
+        if(gmp_cmp($pt1['x'], $pt2['x']) === 0  && gmp_cmp($pt1['y'], $pt2['y']) === 0) //if identical
         {
             return $this->doublePoint($pt1);
         }
 
         $gcd = gmp_strval(gmp_gcd(gmp_sub($pt1['x'], $pt2['x']), $p));
-        if($gcd != '1')
+        if($gcd !== '1')
         {
             throw new \Exception('This library doesn\'t yet supports point at infinity. See https://github.com/BitcoinPHP/BitcoinECDSA.php/issues/9');
         }
@@ -419,16 +419,16 @@ class BitcoinECDSA
     public function mulPoint($k, Array $pG, $base = null)
     {
         //in order to calculate k*G
-        if($base == 16 || $base == null || is_resource($base))
+        if($base === 16 || $base === null || is_resource($base))
             $k = gmp_init($k, 16);
-        if($base == 10)
+        if($base === 10)
             $k = gmp_init($k, 10);
         $kBin = gmp_strval($k, 2);
 
         $lastPoint = $pG;
         for($i = 1; $i < strlen($kBin); $i++)
         {
-            if(substr($kBin, $i, 1) == 1 )
+            if(substr($kBin, $i, 1) === '1')
             {
                 $dPt = $this->doublePoint($lastPoint);
                 $lastPoint = $this->addPoints($dPt, $pG);
@@ -454,13 +454,13 @@ class BitcoinECDSA
     {
         $p = $this->p;
 
-        if(gmp_legendre($a, $p) != 1)
+        if(gmp_legendre($a, $p) !== 1)
         {
             //no result
             return null;
         }
 
-        if(gmp_strval(gmp_mod($p, gmp_init(4, 10)), 10) == 3)
+        if(gmp_strval(gmp_mod($p, gmp_init(4, 10)), 10) === '3')
         {
             $sqrt1 = gmp_powm(
                             $a,
@@ -509,24 +509,24 @@ class BitcoinECDSA
 
         $y = $this->sqrt($y2);
 
-        if(!$y) //if there is no result
+        if($y === null) //if there is no result
         {
             return null;
         }
 
-        if(!$derEvenOrOddCode)
+        if($derEvenOrOddCode === null)
         {
             return $y;
         }
 
-        else if($derEvenOrOddCode == '02') // even
+        else if($derEvenOrOddCode === '02') // even
         {
             $resY = null;
-            if(false == gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+            if(gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10) === '0')
                 $resY = gmp_strval($y[0], 16);
-            if(false == gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+            if(gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10) === '0')
                 $resY = gmp_strval($y[1], 16);
-            if($resY)
+            if($resY !== null)
             {
                 while(strlen($resY) < 64)
                 {
@@ -535,14 +535,14 @@ class BitcoinECDSA
             }
             return $resY;
         }
-        else if($derEvenOrOddCode == '03') // odd
+        else if($derEvenOrOddCode === '03') // odd
         {
             $resY = null;
-            if(true == gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10))
+            if(gmp_strval(gmp_mod($y[0], gmp_init(2, 10)), 10) === '1')
                 $resY = gmp_strval($y[0], 16);
-            if(true == gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10))
+            if(gmp_strval(gmp_mod($y[1], gmp_init(2, 10)), 10) === '1')
                 $resY = gmp_strval($y[1], 16);
-            if($resY)
+            if($resY !== null)
             {
                 while(strlen($resY) < 64)
                 {
@@ -564,14 +564,14 @@ class BitcoinECDSA
      */
     public function getPubKeyPointsWithDerPubKey($derPubKey)
     {
-        if(substr($derPubKey, 0, 2) == '04' && strlen($derPubKey) == 130)
+        if(substr($derPubKey, 0, 2) === '04' && strlen($derPubKey) === 130)
         {
             //uncompressed der encoded public key
             $x = substr($derPubKey, 2, 64);
             $y = substr($derPubKey, 66, 64);
             return array('x' => $x, 'y' => $y);
         }
-        else if((substr($derPubKey, 0, 2) == '02' || substr($derPubKey, 0, 2) == '03') && strlen($derPubKey) == 66)
+        else if((substr($derPubKey, 0, 2) === '02' || substr($derPubKey, 0, 2) === '03') && strlen($derPubKey) === 66)
         {
             //compressed der encoded public key
             $x = substr($derPubKey, 2, 64);
@@ -592,13 +592,13 @@ class BitcoinECDSA
      */
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
-        if($compressed == false)
+        if($compressed === false)
         {
             return '04' . $pubKey['x'] . $pubKey['y'];
         }
         else
         {
-            if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) == 0)
+            if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) === '0')
                 $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
             else
                 $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
@@ -633,7 +633,7 @@ class BitcoinECDSA
                     );
         $y = gmp_mod(gmp_pow(gmp_init($y, 16), 2), $p);
 
-        if(gmp_cmp($y2, $y) == 0)
+        if(gmp_cmp($y2, $y) === 0)
             return true;
         else
             return false;
@@ -703,7 +703,7 @@ class BitcoinECDSA
         if(empty($pubKeyPts))
             $pubKeyPts = $this->getPubKeyPoints();
 
-        if(gmp_strval(gmp_mod(gmp_init($pubKeyPts['y'], 16), gmp_init(2, 10))) == 0)
+        if(gmp_strval(gmp_mod(gmp_init($pubKeyPts['y'], 16), gmp_init(2, 10))) === '0')
             $compressedPubKey  	= '02' . $pubKeyPts['x'];	//if $pubKey['y'] is even
         else
             $compressedPubKey  	= '03' . $pubKeyPts['x'];	//if $pubKey['y'] is odd
@@ -722,7 +722,7 @@ class BitcoinECDSA
      */
     public function getUncompressedAddress($compressed = false, $derPubKey = null)
     {
-        if(null != $derPubKey)
+        if($derPubKey !== null)
         {
             if($compressed) {
                 $address    = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
@@ -773,7 +773,7 @@ class BitcoinECDSA
     public function setPrivateKey($k)
     {
         //private key has to be passed as an hexadecimal number
-        if(gmp_cmp(gmp_init($k, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1)
+        if(gmp_cmp(gmp_init($k, 16), gmp_sub($this->n, gmp_init(1, 10))) === 1)
         {
             throw new \Exception('Private Key is not in the 1,n-1 range');
         }
@@ -812,12 +812,12 @@ class BitcoinECDSA
     public function validateAddress($address)
     {
         $address    = hex2bin($this->base58_decode($address));
-        if(strlen($address) != 25)
+        if(strlen($address) !== 25)
             return false;
         $checksum   = substr($address, 21, 4);
         $rawAddress = substr($address, 0, 21);
 
-        if(substr(hex2bin($this->hash256($rawAddress)), 0, 4) == $checksum)
+        if(substr(hex2bin($this->hash256($rawAddress)), 0, 4) === $checksum)
             return true;
         else
             return false;
@@ -834,7 +834,7 @@ class BitcoinECDSA
         $key            = $this->base58_decode($wif, false);
         $length         = strlen($key);
         $checksum    = $this->hash256(hex2bin(substr($key, 0, $length - 8)));
-        if(substr($checksum, 0, 8) == substr($key, $length - 8, 8))
+        if(substr($checksum, 0, 8) === substr($key, $length - 8, 8))
             return true;
         else
             return false;
@@ -858,7 +858,7 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        if(null == $nonce)
+        if($nonce === null)
         {
             $nonce      = gmp_strval(
                                      gmp_mod(
@@ -961,7 +961,7 @@ class BitcoinECDSA
         $res = "\n-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
         $res .= $message;
         $res .= "\n-----BEGIN SIGNATURE-----\n";
-        if(true == $compressed)
+        if($compressed === true)
             $res .= $this->getAddress() . "\n";
         else
             $res .= $this->getUncompressedAddress() . "\n";
@@ -970,7 +970,7 @@ class BitcoinECDSA
         for($i = 0; $i < 4; $i++)
         {
             $flag = 27;
-            if(true == $compressed)
+            if($compressed === true)
                 $flag += 4;
             $flag += $i;
 
@@ -982,14 +982,14 @@ class BitcoinECDSA
             //echo "\nRecovered PubKey : \n";
             //print_r($recoveredPubKey);
 
-            if($this->getDerPubKeyWithPubKeyPoints($pubKeyPts, $compressed) == $recoveredPubKey)
+            if($this->getDerPubKeyWithPubKeyPoints($pubKeyPts, $compressed) === $recoveredPubKey)
             {
                 $finalFlag = $flag;
             }
         }
 
         //echo "Final flag : " . dechex($finalFlag) . "\n";
-        if(0 == $finalFlag)
+        if($finalFlag === 0)
         {
             throw new \Exception('Unable to get a valid signature flag.');
         }
@@ -1046,20 +1046,20 @@ class BitcoinECDSA
 
         //step 1.3
         $y = null;
-        if(1 == $flag % 2) //check if y is even.
+        if($flag % 2 === 1) //check if y is even.
         {
             $gmpY = $this->calculateYWithX(gmp_strval($x, 16), '02');
-            if(null != $gmpY)
+            if($gmpY !== null)
                 $y = gmp_init($gmpY, 16);
         }
         else
         {
             $gmpY = $this->calculateYWithX(gmp_strval($x, 16), '03');
-            if(null != $gmpY)
+            if($gmpY !== null)
                 $y = gmp_init($gmpY, 16);
         }
 
-        if(null == $y)
+        if($y === null)
             return null;
 
         $Rpt = array('x' => $x, 'y' => $y);
@@ -1158,7 +1158,7 @@ class BitcoinECDSA
         while(strlen($xRes) < 64)
             $xRes = '0' . $xRes;
 
-        if(strtoupper($xRes) == strtoupper($R))
+        if(strtoupper($xRes) === strtoupper($R))
             return true;
         else
             return false;
@@ -1175,7 +1175,7 @@ class BitcoinECDSA
     public function checkDerSignature($pubKey, $signature, $hash)
     {
         $signature = hex2bin($signature);
-        if('30' != bin2hex(substr($signature, 0, 1)))
+        if(bin2hex(substr($signature, 0, 1)) !== '30')
             return false;
 
         $RLength = hexdec(bin2hex(substr($signature, 3, 1)));
@@ -1242,12 +1242,12 @@ class BitcoinECDSA
 
         $derPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
 
-        if($isCompressed == true)
+        if($isCompressed === true)
             $recoveredAddress = $this->getAddress($derPubKey);
         else
             $recoveredAddress = $this->getUncompressedAddress(false, $derPubKey);
 
-        if($address == $recoveredAddress)
+        if($address === $recoveredAddress)
             return true;
         else
             return false;
