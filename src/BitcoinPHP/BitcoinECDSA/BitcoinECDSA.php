@@ -131,22 +131,28 @@ class BitcoinECDSA
     }
 
     /**
+     * Generates a random 256 bytes hexadecimal encoded string that is smaller than n
+     *
      * @param string $extra
      * @return string Hex
      * @throws \Exception
      */
     public function generateRandom256BitsHexaString($extra = 'FkejkzqesrfeifH3ioio9hb55sdssdsdfOO:ss')
     {
-        $bytes      = openssl_random_pseudo_bytes(256, $cStrong);
-        $hex        = bin2hex($bytes);
-        $random     = $hex . microtime(true).rand(100000000000, 1000000000000) . $extra;
-
-        if(!$cStrong)
+        do
         {
-            throw new \Exception('Your system is not able to generate strong enough random numbers');
-        }
+            $bytes = openssl_random_pseudo_bytes(256, $cStrong);
+            $hex = bin2hex($bytes);
+            $random = $hex . microtime(true) . rand(100000000000, 1000000000000) . $extra;
 
-        return $this->hash256($random);
+            if (!$cStrong) {
+                throw new \Exception('Your system is not able to generate strong enough random numbers');
+            }
+            $res = $this->hash256($random);
+
+        } while(gmp_cmp(gmp_init($res, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1); // make sure the generate string is smaller than n
+
+        return $res;
     }
 
     /***
@@ -789,11 +795,7 @@ class BitcoinECDSA
      */
     public function generateRandomPrivateKey($extra = 'FSQF5356dsdsqdfEFEQ3fq4q6dq4s5d')
     {
-        //private key has to be passed as an hexadecimal number
-        do { //generate a new random private key until to find one that is valid
-            $this->k    = $this->generateRandom256BitsHexaString($extra);
-
-        } while(gmp_cmp(gmp_init($this->k, 16), gmp_sub($this->n, gmp_init(1, 10))) == 1);
+        $this->k    = $this->generateRandom256BitsHexaString($extra);
     }
 
     /***
