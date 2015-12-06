@@ -39,8 +39,8 @@ class BitcoinECDSA
      * Convert a number to a compact Int
      * taken from https://github.com/scintill/php-bitcoin-signature-routines/blob/master/verifymessage.php
      *
-     * @param $i
-     * @return string
+     * @param int $i
+     * @return string (bin)
      * @throws \Exception
      */
     public function numToVarIntString($i) {
@@ -58,7 +58,7 @@ class BitcoinECDSA
     /***
      * Set the network prefix, '00' = main network, '6f' = test network.
      *
-     * @param String Hex $prefix
+     * @param string $prefix (hexa)
      */
     public function setNetworkPrefix($prefix)
     {
@@ -68,7 +68,7 @@ class BitcoinECDSA
     /**
      * Returns the current network prefix, '00' = main network, '6f' = test network.
      *
-     * @return String Hex
+     * @return string (hexa)
      */
     public function getNetworkPrefix()
     {
@@ -78,9 +78,9 @@ class BitcoinECDSA
     /***
      * Permutation table used for Base58 encoding and decoding.
      *
-     * @param $char
+     * @param string $char
      * @param bool $reverse
-     * @return null
+     * @return string|null
      */
     public function base58_permutation($char, $reverse = false)
     {
@@ -113,8 +113,8 @@ class BitcoinECDSA
     /***
      * Bitcoin standard 256 bit hash function : double sha256
      *
-     * @param $data
-     * @return string
+     * @param string $data
+     * @return string (hexa)
      */
     public function hash256($data)
     {
@@ -122,8 +122,8 @@ class BitcoinECDSA
     }
 
     /**
-     * @param $data
-     * @return string
+     * @param string $data
+     * @return string (hexa)
      */
     public function hash160($data)
     {
@@ -134,7 +134,7 @@ class BitcoinECDSA
      * Generates a random 256 bytes hexadecimal encoded string that is smaller than n
      *
      * @param string $extra
-     * @return string Hex
+     * @return string (hexa)
      * @throws \Exception
      */
     public function generateRandom256BitsHexaString($extra = 'FkejkzqesrfeifH3ioio9hb55sdssdsdfOO:ss')
@@ -158,9 +158,9 @@ class BitcoinECDSA
     /***
      * encode a hexadecimal string in Base58.
      *
-     * @param String Hex $data
+     * @param string $data (hexa)
      * @param bool $littleEndian
-     * @return String Base58
+     * @return string (base58)
      * @throws \Exception
      */
     public function base58_encode($data, $littleEndian = true)
@@ -200,9 +200,9 @@ class BitcoinECDSA
     /***
      * Decode a Base58 encoded string and returns it's value as a hexadecimal string
      *
-     * @param $encodedData
+     * @param string $encodedData (base58)
      * @param bool $littleEndian
-     * @return String Hex
+     * @return string (hexa)
      */
     public function base58_decode($encodedData, $littleEndian = true)
     {
@@ -243,7 +243,7 @@ class BitcoinECDSA
     /***
      * returns the private key under the Wallet Import Format
      *
-     * @return String Base58
+     * @return string (base58)
      * @throws \Exception
      */
     public function getWif()
@@ -410,7 +410,7 @@ class BitcoinECDSA
     /***
      * Computes the result of a point multiplication and returns the resulting point as an Array.
      *
-     * @param String Hex $k
+     * @param string|resource $k (hexa|GMP|Other bases definded in base)
      * @param Array $pG
      * @param $base
      * @throws \Exception
@@ -446,7 +446,7 @@ class BitcoinECDSA
     /***
      * Calculates the square root of $a mod p and returns the 2 solutions as an array.
      *
-     * @param $a
+     * @param resource $a (GMP)
      * @return array|null
      * @throws \Exception
      */
@@ -485,7 +485,7 @@ class BitcoinECDSA
     /***
      * Calculate the Y coordinates for a given X coordinate.
      *
-     * @param $x
+     * @param string $x (hexa)
      * @param null $derEvenOrOddCode
      * @return array|null|String
      */
@@ -558,7 +558,7 @@ class BitcoinECDSA
     /***
      * returns the public key coordinates as an array.
      *
-     * @param $derPubKey
+     * @param string $derPubKey (hexa)
      * @return array
      * @throws \Exception
      */
@@ -585,6 +585,11 @@ class BitcoinECDSA
     }
 
 
+    /**
+     * @param string $pubKey (hexa)
+     * @param bool $compressed
+     * @return string
+     */
     public function getDerPubKeyWithPubKeyPoints($pubKey, $compressed = true)
     {
         if($compressed == false)
@@ -605,8 +610,8 @@ class BitcoinECDSA
     /***
      * Returns true if the point is on the curve and false if it isn't.
      *
-     * @param $x
-     * @param $y
+     * @param string $x (hexa)
+     * @param string $y (hexa)
      * @return bool
      */
     public function validatePoint($x, $y)
@@ -674,7 +679,7 @@ class BitcoinECDSA
      * returns the uncompressed DER encoded public key.
      *
      * @param array $pubKeyPts
-     * @return string
+     * @return string (hexa)
      * @throws \Exception
      */
     public function getUncompressedPubKey(array $pubKeyPts = array())
@@ -711,7 +716,7 @@ class BitcoinECDSA
      * the compressed if $compressed is true.
      *
      * @param bool $compressed
-     * @param string $derPubKey
+     * @param string $derPubKey (hexa)
      * @throws \Exception
      * @return String Base58
      */
@@ -751,8 +756,8 @@ class BitcoinECDSA
     /***
      * returns the compressed Bitcoin address generated from the private key.
      *
-     * @param string $derPubKey
-     * @return String Base58
+     * @param string $derPubKey (hexa)
+     * @return String (base58)
      */
     public function getAddress($derPubKey = null)
     {
@@ -762,7 +767,7 @@ class BitcoinECDSA
     /***
      * set a private key.
      *
-     * @param String Hex $k
+     * @param string $k (hexa)
      * @throws \Exception
      */
     public function setPrivateKey($k)
@@ -778,7 +783,7 @@ class BitcoinECDSA
     /***
      * return the private key.
      *
-     * @return String Hex
+     * @return string (hexa)
      */
     public function getPrivateKey()
     {
@@ -801,7 +806,7 @@ class BitcoinECDSA
     /***
      * Tests if the address is valid or not.
      *
-     * @param String Base58 $address
+     * @param string $address (base58)
      * @return bool
      */
     public function validateAddress($address)
@@ -821,7 +826,7 @@ class BitcoinECDSA
     /***
      * Tests if the Wif key (Wallet Import Format) is valid or not.
      *
-     * @param String Base58 $wif
+     * @param string $wif (base58)
      * @return bool
      */
     public function validateWifKey($wif)
@@ -838,7 +843,7 @@ class BitcoinECDSA
     /***
      * Sign a hash with the private key that was set and returns signatures as an array (R,S)
      *
-     * @param $hash
+     * @param string $hash (hexa)
      * @param null $nonce
      * @throws \Exception
      * @return Array
@@ -912,7 +917,7 @@ class BitcoinECDSA
     /***
      * Sign a hash with the private key that was set and returns a DER encoded signature
      *
-     * @param $hash
+     * @param string $hash (hexa)
      * @param null $nonce
      * @return string
      */
@@ -929,7 +934,7 @@ class BitcoinECDSA
     /***
      * Satoshi client's standard message signature implementation.
      *
-     * @param $message
+     * @param string $message
      * @param bool $compressed
      * @param null $nonce
      * @return string
@@ -1005,10 +1010,10 @@ class BitcoinECDSA
      * binary number between 28 and 35 inclusive
      * if the flag is > 30 then the address is compressed.
      *
-     * @param $flag
-     * @param $R
-     * @param $S
-     * @param $hash
+     * @param int $flag
+     * @param string $R (hexa)
+     * @param string $S (hexa)
+     * @param string $hash (hexa)
      * @return array
      */
     public function getPubKeyWithRS($flag, $R, $S, $hash)
@@ -1099,10 +1104,10 @@ class BitcoinECDSA
     /***
      * Check signature with public key R & S values of the signature and the message hash.
      *
-     * @param $pubKey
-     * @param $R
-     * @param $S
-     * @param $hash
+     * @param $pubKey (hexa)
+     * @param $R (hexa)
+     * @param $S (hexa)
+     * @param $hash (hexa)
      * @return bool
      */
     public function checkSignaturePoints($pubKey, $R, $S, $hash)
@@ -1163,9 +1168,9 @@ class BitcoinECDSA
     /***
      * checkSignaturePoints wrapper for DER signatures
      *
-     * @param $pubKey
-     * @param $signature
-     * @param $hash
+     * @param string $pubKey (hexa)
+     * @param string $signature (hexa)
+     * @param string $hash (hexa)
      * @return bool
      */
     public function checkDerSignature($pubKey, $signature, $hash)
@@ -1194,7 +1199,7 @@ class BitcoinECDSA
     /***
      * checks the signature of a bitcoin signed message.
      *
-     * @param $rawMessage
+     * @param string $rawMessage
      * @return bool
      */
     public function checkSignatureForRawMessage($rawMessage)
@@ -1213,9 +1218,9 @@ class BitcoinECDSA
     /***
      * checks the signature of a bitcoin signed message.
      *
-     * @param $address
-     * @param $encodedSignature
-     * @param $message
+     * @param string $address (base58)
+     * @param string $encodedSignature (base64)
+     * @param string $message
      * @return bool
      */
     public function checkSignatureForMessage($address, $encodedSignature, $message)
