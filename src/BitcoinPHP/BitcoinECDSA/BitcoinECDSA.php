@@ -1033,7 +1033,6 @@ class BitcoinECDSA
         $recid = $flag - 27;
 
         //step 1.1
-        $x = null;
         $x = gmp_add(
                      gmp_init($R, 16),
                      gmp_mul(
