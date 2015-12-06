@@ -1253,5 +1253,3 @@ class BitcoinECDSA
             return false;
     }
 }
-
-?>
