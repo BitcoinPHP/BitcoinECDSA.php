@@ -858,7 +858,7 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        if(null == $nonce)
+        if($nonce == null)
         {
             $nonce      = gmp_strval(
                                      gmp_mod(
@@ -961,7 +961,7 @@ class BitcoinECDSA
         $res = "\n-----BEGIN BITCOIN SIGNED MESSAGE-----\n";
         $res .= $message;
         $res .= "\n-----BEGIN SIGNATURE-----\n";
-        if(true == $compressed)
+        if($compressed == true)
             $res .= $this->getAddress() . "\n";
         else
             $res .= $this->getUncompressedAddress() . "\n";
@@ -970,7 +970,7 @@ class BitcoinECDSA
         for($i = 0; $i < 4; $i++)
         {
             $flag = 27;
-            if(true == $compressed)
+            if($compressed == true)
                 $flag += 4;
             $flag += $i;
 
@@ -989,7 +989,7 @@ class BitcoinECDSA
         }
 
         //echo "Final flag : " . dechex($finalFlag) . "\n";
-        if(0 == $finalFlag)
+        if($finalFlag == 0)
         {
             throw new \Exception('Unable to get a valid signature flag.');
         }
@@ -1046,7 +1046,7 @@ class BitcoinECDSA
 
         //step 1.3
         $y = null;
-        if(1 == $flag % 2) //check if y is even.
+        if($flag % 2 == 1) //check if y is even.
         {
             $gmpY = $this->calculateYWithX(gmp_strval($x, 16), '02');
             if(null != $gmpY)
@@ -1059,7 +1059,7 @@ class BitcoinECDSA
                 $y = gmp_init($gmpY, 16);
         }
 
-        if(null == $y)
+        if($y == null)
             return null;
 
         $Rpt = array('x' => $x, 'y' => $y);
