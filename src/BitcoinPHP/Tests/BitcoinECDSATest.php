@@ -154,4 +154,3 @@ HJoQp4rhjY5wd4NyhSVUMy4EY+9npgOnXzro+l5ibkSBfA/p6JjkfUuvlnc8As6tw4eOIhtp2BN81xw/
 -----END BITCOIN SIGNED MESSAGE-----"));
     }
 }
-?>

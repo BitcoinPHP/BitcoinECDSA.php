@@ -16,5 +16,3 @@ for($i = 0; $i < 1000; $i++) {
 
 }
 echo "generated 1000 Addresses in " . ((microtime(true)-$time)) ." seconds";
-
-?>

@@ -586,7 +586,7 @@ class BitcoinECDSA
 
 
     /**
-     * @param string $pubKey (hexa)
+     * @param array $pubKey (array <x:string, y:string>)
      * @param bool $compressed
      * @return string
      */
@@ -678,7 +678,7 @@ class BitcoinECDSA
     /***
      * returns the uncompressed DER encoded public key.
      *
-     * @param array $pubKeyPts
+     * @param array $pubKeyPts (array <x:string, y:string>)
      * @return string (hexa)
      * @throws \Exception
      */
@@ -694,7 +694,7 @@ class BitcoinECDSA
     /***
      * returns the compressed DER encoded public key.
      *
-     * @param array $pubKeyPts
+     * @param array $pubKeyPts (array <x:string, y:string>)
      * @return array|string
      * @throws \Exception
      */
@@ -1033,7 +1033,6 @@ class BitcoinECDSA
         $recid = $flag - 27;
 
         //step 1.1
-        $x = null;
         $x = gmp_add(
                      gmp_init($R, 16),
                      gmp_mul(
@@ -1104,10 +1103,10 @@ class BitcoinECDSA
     /***
      * Check signature with public key R & S values of the signature and the message hash.
      *
-     * @param $pubKey (hexa)
-     * @param $R (hexa)
-     * @param $S (hexa)
-     * @param $hash (hexa)
+     * @param string $pubKey (hexa)
+     * @param string $R (hexa)
+     * @param string $S (hexa)
+     * @param string $hash (hexa)
      * @return bool
      */
     public function checkSignaturePoints($pubKey, $R, $S, $hash)
@@ -1254,5 +1253,3 @@ class BitcoinECDSA
             return false;
     }
 }
-
-?>
