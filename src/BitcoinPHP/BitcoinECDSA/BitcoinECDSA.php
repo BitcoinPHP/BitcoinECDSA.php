@@ -145,7 +145,7 @@ class BitcoinECDSA
             $hex = bin2hex($bytes);
             $random = $hex . microtime(true) . rand(100000000000, 1000000000000) . $extra;
 
-            if (!$cStrong) {
+            if ($cStrong === false) {
                 throw new \Exception('Your system is not able to generate strong enough random numbers');
             }
             $res = $this->hash256($random);
@@ -724,7 +724,7 @@ class BitcoinECDSA
     {
         if($derPubKey !== null)
         {
-            if($compressed) {
+            if($compressed === true) {
                 $address    = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
             }
             else {
@@ -733,7 +733,7 @@ class BitcoinECDSA
         }
         else
         {
-            if($compressed) {
+            if($compressed === true) {
                 $address 	= $this->getPubKey();
             }
             else {
@@ -1096,7 +1096,7 @@ class BitcoinECDSA
         if($this->checkSignaturePoints($derPubKey, $R, $S, $hash))
             return $derPubKey;
         else
-            return false;
+            return null;
 
     }
 
