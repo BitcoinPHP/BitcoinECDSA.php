@@ -29,8 +29,10 @@ class BitcoinECDSA
         $this->p = gmp_init('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F', 16);
         $this->n = gmp_init('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141', 16);
 
-        $this->G = array('x' => gmp_init('55066263022277343669578718895168534326250603453777594175500187360389116729240'),
-                         'y' => gmp_init('32670510020758816978083085130507043184471273380659243275938904335757337482424'));
+        $this->G = [
+                    'x' => gmp_init('55066263022277343669578718895168534326250603453777594175500187360389116729240'),
+                    'y' => gmp_init('32670510020758816978083085130507043184471273380659243275938904335757337482424')
+                   ];
 
         $this->networkPrefix = '00';
     }
@@ -84,15 +86,16 @@ class BitcoinECDSA
      */
     public function base58_permutation($char, $reverse = false)
     {
-        $table = array('1','2','3','4','5','6','7','8','9','A','B','C','D',
-                       'E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W',
-                       'X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','m','n','o',
-                       'p','q','r','s','t','u','v','w','x','y','z'
-                 );
+        $table = [
+                  '1','2','3','4','5','6','7','8','9','A','B','C','D',
+                  'E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W',
+                  'X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','m','n','o',
+                  'p','q','r','s','t','u','v','w','x','y','z'
+                 ];
 
         if($reverse)
         {
-            $reversedTable = array();
+            $reversedTable = [];
             foreach($table as $key => $element)
             {
                 $reversedTable[$element] = $key;
@@ -305,7 +308,7 @@ class BitcoinECDSA
 
         // nPtX = slope^2 - 2 * ptX
         // Equals slope^2 - ptX - ptX
-        $nPt = array();
+        $nPt = [];
         $nPt['x'] = gmp_mod(
                             gmp_sub(
                                     gmp_sub(
@@ -377,7 +380,7 @@ class BitcoinECDSA
                       );
 
         // nPtX = slope^2 - ptX1 - ptX2
-        $nPt = array();
+        $nPt = [];
         $nPt['x']   = gmp_mod(
                               gmp_sub(
                                       gmp_sub(
@@ -474,7 +477,7 @@ class BitcoinECDSA
             // In an infinite number field you have -2^2 = 2^2 = 4
             // In a finite number field you have a^2 = (p-a)^2
             $sqrt2 = gmp_mod(gmp_sub($p, $sqrt1), $p);
-            return array($sqrt1, $sqrt2);
+            return [$sqrt1, $sqrt2];
         }
         else
         {
@@ -569,14 +572,14 @@ class BitcoinECDSA
             //uncompressed der encoded public key
             $x = substr($derPubKey, 2, 64);
             $y = substr($derPubKey, 66, 64);
-            return array('x' => $x, 'y' => $y);
+            return ['x' => $x, 'y' => $y];
         }
         else if((substr($derPubKey, 0, 2) === '02' || substr($derPubKey, 0, 2) === '03') && strlen($derPubKey) === 66)
         {
             //compressed der encoded public key
             $x = substr($derPubKey, 2, 64);
             $y = $this->calculateYWithX($x, substr($derPubKey, 0, 2));
-            return array('x' => $x, 'y' => $y);
+            return ['x' => $x, 'y' => $y];
         }
         else
         {
@@ -655,8 +658,9 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        $pubKey 	    = $this->mulPoint($k,
-                                          array('x' => $G['x'], 'y' => $G['y'])
+        $pubKey 	    = $this->mulPoint(
+                                          $k,
+                                          ['x' => $G['x'], 'y' => $G['y']]
                                  );
 
         $pubKey['x']	= gmp_strval($pubKey['x'], 16);
@@ -682,7 +686,7 @@ class BitcoinECDSA
      * @return string (hexa)
      * @throws \Exception
      */
-    public function getUncompressedPubKey(array $pubKeyPts = array())
+    public function getUncompressedPubKey(array $pubKeyPts = [])
     {
         if(empty($pubKeyPts))
             $pubKeyPts = $this->getPubKeyPoints();
@@ -698,7 +702,7 @@ class BitcoinECDSA
      * @return array|string
      * @throws \Exception
      */
-    public function getPubKey(array $pubKeyPts = array())
+    public function getPubKey(array $pubKeyPts = [])
     {
         if(empty($pubKeyPts))
             $pubKeyPts = $this->getPubKeyPoints();
@@ -911,7 +915,7 @@ class BitcoinECDSA
             $R = '0' . $R;
         }
 
-        return array('R' => $R, 'S' => $S);
+        return ['R' => $R, 'S' => $S];
     }
 
     /***
@@ -1062,7 +1066,7 @@ class BitcoinECDSA
         if($y === null)
             return null;
 
-        $Rpt = array('x' => $x, 'y' => $y);
+        $Rpt = ['x' => $x, 'y' => $y];
 
         //step 1.6.1
         //calculate r^-1 (S*Rpt - eG)
