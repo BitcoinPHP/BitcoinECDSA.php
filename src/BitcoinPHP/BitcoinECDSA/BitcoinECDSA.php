@@ -1026,7 +1026,7 @@ class BitcoinECDSA
         $isCompressed = false;
 
         if ($flag < 27 || $flag >= 35)
-            return false;
+            return null;
 
         if($flag >= 31) //if address is compressed
         {
