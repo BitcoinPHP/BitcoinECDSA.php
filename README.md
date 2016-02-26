@@ -178,7 +178,7 @@ $bitcoinECDSA->checkDerSignature($pubKey, $signature, $hash)
 Returns true if the signature is matching the public key and false if it isn't.
 
 
-Licence
+License
 ===============
 This is free and unencumbered software released into the public domain.
 
