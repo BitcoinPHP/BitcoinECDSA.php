@@ -109,10 +109,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             $signedMessage = $bitcoinECDSA->signMessage('Hello ' . $i);
             echo $signedMessage."\n";
             echo "\nSignature:\n";
-            print_r($bitcoinECDSA->getSignatureHashPoints(gmp_strval(gmp_init('968236873715988614170569073515315707566766479517',10),16), '1'));
-
-            echo "\n" . bin2hex(base64_decode('Gyk26Le4ER0EUvZiFGUCXhJKWVEoTtQNU449puYZPaiUmYyrcozt2LuAMgLvnEgpoF6cw8ob9Mj/CjP9ATydO1k='));
-
+            print_r($bitcoinECDSA->getSignatureHashPoints(hash('sha256', rand(0,10000000))));
             // test : signed message is valid
             $this->assertTrue($bitcoinECDSA->checkSignatureForRawMessage($signedMessage));
 
