@@ -885,25 +885,31 @@ class BitcoinECDSA
         //second part of the signature (S).
         //S = nonce^-1 (hash + privKey * R) mod p
 
-        $S = gmp_strval(
-                        gmp_mod(
-                                gmp_mul(
-                                        gmp_invert(
-                                                   gmp_init($nonce, 16),
-                                                   $n
-                                        ),
-                                        gmp_add(
-                                                gmp_init($hash, 16),
-                                                gmp_mul(
-                                                        gmp_init($k, 16),
-                                                        gmp_init($R, 16)
-                                                )
-                                        )
-                                ),
-                                $n
-                        ),
-                        16
-             );
+
+        $S = gmp_mod(
+            gmp_mul(
+                gmp_invert(
+                    gmp_init($nonce, 16),
+                    $n
+                ),
+                gmp_add(
+                    gmp_init($hash, 16),
+                    gmp_mul(
+                        gmp_init($k, 16),
+                        gmp_init($R, 16)
+                    )
+                )
+            ),
+            $n
+        );
+
+        //BIP 62, make sure we use the low-s value
+        if(gmp_cmp($S, gmp_div($n, 2)) === 1)
+        {
+            $S = gmp_sub($n, $S);
+        }
+
+        $S = gmp_strval($S, 16);
 
         if(strlen($S)%2)
         {
