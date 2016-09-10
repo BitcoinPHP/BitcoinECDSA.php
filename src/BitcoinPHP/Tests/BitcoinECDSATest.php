@@ -106,7 +106,7 @@ class BitcoinECDSATest extends \PHPUnit_Framework_TestCase
             print_r($bitcoinECDSA->getPubKey());
             print_r($bitcoinECDSA->checkSignaturePoints($bitcoinECDSA->getPubKey(), $pts['R'], $pts['S'], hash('sha256', 'hello')));
             echo "\nEND";
-            $signedMessage = $bitcoinECDSA->signMessage('Hello');
+            $signedMessage = $bitcoinECDSA->signMessage('Hello ' . $i);
             echo $signedMessage."\n";
             echo "\nSignature:\n";
             print_r($bitcoinECDSA->getSignatureHashPoints(gmp_strval(gmp_init('968236873715988614170569073515315707566766479517',10),16), '1'));
