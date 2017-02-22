@@ -134,7 +134,7 @@ Returns true if the address is valid and false if it isn't
 **Validate a Wif key**
 
 ```php
-$bitcoinECDSA->validateWifKey();
+$bitcoinECDSA->validateWifKey($wif);
 ```
 Returns true if the WIF key is valid and false if it isn't
 
