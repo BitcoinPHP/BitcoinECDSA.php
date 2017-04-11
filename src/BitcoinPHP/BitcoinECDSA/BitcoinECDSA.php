@@ -260,7 +260,7 @@ class BitcoinECDSA
         $secretKey      = '80' . $k;
         $secretKey     .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
 
-        return strrev($this->base58_encode($secretKey));
+        return $this->base58_encode($secretKey);
     }
 
     /***
