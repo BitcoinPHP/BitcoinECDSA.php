@@ -29,7 +29,7 @@ composer require bitcoin-php/bitcoin-ecdsa
 ```
 Alternatively add following snippet in you composer.json
 ```
-"bitcoin-php/bitcoin-ecdsa" : ">=1.1"
+"bitcoin-php/bitcoin-ecdsa" : ">=1.3"
 ```
 
 **Instanciation**
@@ -179,6 +179,12 @@ $bitcoinECDSA->checkDerSignature($pubKey, $signature, $hash)
 
 Returns true if the signature is matching the public key and false if it isn't.
 
+Examples
+===============
+ - [Generate an address](https://github.com/BitcoinPHP/BitcoinECDSA.php/blob/master/Examples/generateAddress.php)
+ - [Sign a message](https://github.com/BitcoinPHP/BitcoinECDSA.php/blob/master/Examples/signMessage.php)
+ - [Verify a message](https://github.com/BitcoinPHP/BitcoinECDSA.php/blob/master/Examples/verifyMessage.php)
+ - [Import or export a private key using WIF](https://github.com/BitcoinPHP/BitcoinECDSA.php/blob/master/Examples/wif.php)
 
 License
 ===============
