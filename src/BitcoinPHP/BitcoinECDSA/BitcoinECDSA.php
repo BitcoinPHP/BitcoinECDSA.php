@@ -244,26 +244,6 @@ class BitcoinECDSA
     }
 
     /***
-     * returns the private key under the Wallet Import Format
-     *
-     * @return string (base58)
-     * @throws \Exception
-     */
-    public function getWif()
-    {
-        if(!isset($this->k))
-        {
-            throw new \Exception('No Private Key was defined');
-        }
-
-        $k              = $this->k;
-        $secretKey      = '80' . $k;
-        $secretKey     .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
-
-        return $this->base58_encode($secretKey);
-    }
-
-    /***
      * Computes the result of a point addition and returns the resulting point as an Array.
      *
      * @param Array $pt
@@ -602,9 +582,9 @@ class BitcoinECDSA
         else
         {
             if(gmp_strval(gmp_mod(gmp_init($pubKey['y'], 16), gmp_init(2, 10))) === '0')
-                $pubKey  	= '02' . $pubKey['x'];	//if $pubKey['y'] is even
+                $pubKey = '02' . $pubKey['x'];	//if $pubKey['y'] is even
             else
-                $pubKey  	= '03' . $pubKey['x'];	//if $pubKey['y'] is odd
+                $pubKey = '03' . $pubKey['x'];	//if $pubKey['y'] is odd
 
             return $pubKey;
         }
@@ -658,13 +638,13 @@ class BitcoinECDSA
             throw new \Exception('No Private Key was defined');
         }
 
-        $pubKey 	    = $this->mulPoint(
+        $pubKey = $this->mulPoint(
                                           $k,
                                           ['x' => $G['x'], 'y' => $G['y']]
                                  );
 
-        $pubKey['x']	= gmp_strval($pubKey['x'], 16);
-        $pubKey['y']	= gmp_strval($pubKey['y'], 16);
+        $pubKey['x'] = gmp_strval($pubKey['x'], 16);
+        $pubKey['y'] = gmp_strval($pubKey['y'], 16);
 
         while(strlen($pubKey['x']) < 64)
         {
@@ -708,9 +688,9 @@ class BitcoinECDSA
             $pubKeyPts = $this->getPubKeyPoints();
 
         if(gmp_strval(gmp_mod(gmp_init($pubKeyPts['y'], 16), gmp_init(2, 10))) === '0')
-            $compressedPubKey  	= '02' . $pubKeyPts['x'];	//if $pubKey['y'] is even
+            $compressedPubKey = '02' . $pubKeyPts['x'];	//if $pubKey['y'] is even
         else
-            $compressedPubKey  	= '03' . $pubKeyPts['x'];	//if $pubKey['y'] is odd
+            $compressedPubKey = '03' . $pubKeyPts['x'];	//if $pubKey['y'] is odd
 
         return $compressedPubKey;
     }
@@ -729,27 +709,27 @@ class BitcoinECDSA
         if($derPubKey !== null)
         {
             if($compressed === true) {
-                $address    = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+                $address = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
             }
             else {
-                $address    = $this->getUncompressedPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+                $address = $this->getUncompressedPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
             }
         }
         else
         {
             if($compressed === true) {
-                $address 	= $this->getPubKey();
+                $address = $this->getPubKey();
             }
             else {
-                $address 	= $this->getUncompressedPubKey();
+                $address = $this->getUncompressedPubKey();
             }
         }
 
-        $address 	    = $this->getNetworkPrefix() . $this->hash160(hex2bin($address));
+        $address = $this->getNetworkPrefix() . $this->hash160(hex2bin($address));
 
         //checksum
-        $address 	    = $address.substr($this->hash256(hex2bin($address)), 0, 8);
-        $address        = $this->base58_encode($address);
+        $address = $address.substr($this->hash256(hex2bin($address)), 0, 8);
+        $address = $this->base58_encode($address);
 
         if($this->validateAddress($address))
             return $address;
@@ -828,6 +808,26 @@ class BitcoinECDSA
     }
 
     /***
+     * returns the private key under the Wallet Import Format
+     *
+     * @return string (base58)
+     * @throws \Exception
+     */
+    public function getWif()
+    {
+        if(!isset($this->k))
+        {
+            throw new \Exception('No Private Key was defined');
+        }
+
+        $k          = $this->k;
+        $secretKey  = '80' . $k;
+        $secretKey .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
+
+        return $this->base58_encode($secretKey);
+    }
+
+    /***
      * Tests if the Wif key (Wallet Import Format) is valid or not.
      *
      * @param string $wif (base58)
@@ -835,13 +835,27 @@ class BitcoinECDSA
      */
     public function validateWifKey($wif)
     {
-        $key            = $this->base58_decode($wif, false);
-        $length         = strlen($key);
+        $key         = $this->base58_decode($wif, true);
+        $length      = strlen($key);
         $checksum    = $this->hash256(hex2bin(substr($key, 0, $length - 8)));
         if(substr($checksum, 0, 8) === substr($key, $length - 8, 8))
             return true;
         else
             return false;
+    }
+
+    /**
+     * @param string $wif (base58)
+     * @return bool
+     */
+    public function setPrivateKeyWithWif($wif)
+    {
+        if(!$this->validateWifKey($wif)) {
+            throw new \Exception('Invalid WIF');
+        }
+
+        $key = $this->base58_decode($wif, true);
+        $this->setPrivateKey(substr($key, 1, strlen($key) - 9));
     }
 
     /***
@@ -945,15 +959,16 @@ class BitcoinECDSA
      * Satoshi client's standard message signature implementation.
      *
      * @param string $message
+     * @param bool $onlySignature
      * @param bool $compressed
      * @param null $nonce
      * @return string
      * @throws \Exception
      */
-    public function signMessage($message, $compressed = true, $nonce = null)
+    public function signMessage($message, $onlySignature = false ,$compressed = true, $nonce = null)
     {
 
-        $hash = $this->hash256("\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)). $message);
+        $hash   = $this->hash256("\x18Bitcoin Signed Message:\n" . $this->numToVarIntString(strlen($message)). $message);
         $points = $this->getSignatureHashPoints(
                                                 $hash,
                                                 $nonce
@@ -985,12 +1000,8 @@ class BitcoinECDSA
             $flag += $i;
 
             $pubKeyPts = $this->getPubKeyPoints();
-            //echo "\nReal pubKey : \n";
-            //print_r($pubKeyPts);
 
             $recoveredPubKey = $this->getPubKeyWithRS($flag, $R, $S, $hash);
-            //echo "\nRecovered PubKey : \n";
-            //print_r($recoveredPubKey);
 
             if($this->getDerPubKeyWithPubKeyPoints($pubKeyPts, $compressed) === $recoveredPubKey)
             {
@@ -1004,8 +1015,13 @@ class BitcoinECDSA
             throw new \Exception('Unable to get a valid signature flag.');
         }
 
+        $signature = base64_encode(hex2bin(dechex($finalFlag) . $R . $S));
 
-        $res .= base64_encode(hex2bin(dechex($finalFlag) . $R . $S));
+        if($onlySignature) {
+            return $signature;
+        }
+
+        $res .= $signature;
         $res .= "\n-----END BITCOIN SIGNED MESSAGE-----";
 
         return $res;
