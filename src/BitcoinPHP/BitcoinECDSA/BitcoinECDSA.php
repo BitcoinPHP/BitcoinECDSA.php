@@ -146,7 +146,7 @@ class BitcoinECDSA
         {
             $bytes = openssl_random_pseudo_bytes(256, $cStrong);
             $hex = bin2hex($bytes);
-            $random = $hex . microtime(true) . rand(100000000000, 1000000000000) . $extra;
+            $random = $hex . microtime(true) . $extra;
 
             if ($cStrong === false) {
                 throw new \Exception('Your system is not able to generate strong enough random numbers');
