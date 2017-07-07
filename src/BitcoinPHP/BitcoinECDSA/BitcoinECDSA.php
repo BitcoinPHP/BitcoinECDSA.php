@@ -813,7 +813,7 @@ class BitcoinECDSA
      * @return string (base58)
      * @throws \Exception
      */
-    public function getWif()
+    public function getWif($compressed = true)
     {
         if(!isset($this->k))
         {
@@ -821,10 +821,30 @@ class BitcoinECDSA
         }
 
         $k          = $this->k;
+        
+        while(strlen($k) < 64)
+            $k = '0' . $k;
+        
         $secretKey  = '80' . $k;
+        
+        if($compressed) {
+            $secretKey .= '01';
+        }
+        
         $secretKey .= substr($this->hash256(hex2bin($secretKey)), 0, 8);
 
         return $this->base58_encode($secretKey);
+    }
+    
+    /***
+     * returns the private key under the Wallet Import Format for an uncompressed address
+     *
+     * @return string (base58)
+     * @throws \Exception
+     */
+    public function getUncompressedWif()
+    {
+        return getWif(false);
     }
 
     /***
@@ -855,7 +875,8 @@ class BitcoinECDSA
         }
 
         $key = $this->base58_decode($wif, true);
-        $this->setPrivateKey(substr($key, 1, strlen($key) - 9));
+
+        $this->setPrivateKey(substr($key, 2, 64));
     }
 
     /***
