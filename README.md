@@ -82,7 +82,7 @@ returns the private key under the Wallet Import Format
 $bitcoinECDSA->getPubKey();
 ```
 Returns the compressed public key.
-The uncompressed PubKey starts with 0x02 if it's y coordinate is even and 0x03 if it's odd, the next 32 bytes corresponds to the x coordinates.
+The compressed PubKey starts with 0x02 if it's y coordinate is even and 0x03 if it's odd, the next 32 bytes corresponds to the x coordinates.
 
 Example : 0226c50013603b085fbc26411d5d7e564b252d88964eedc4e01251d2d495e92c29
 
