@@ -92,7 +92,7 @@ Example : 0226c50013603b085fbc26411d5d7e564b252d88964eedc4e01251d2d495e92c29
 $bitcoinECDSA->getUncompressedPubKey();
 ```
 
-Returns the The uncompressed PubKey.
+Returns the uncompressed PubKey.
 The uncompressed PubKey starts with 0x04, the next 32 bytes are the x coordinates, the last 32 bytes are the y coordinates.
 
 Example : 04c80e8af3f1b7816a18aa24f242fc0740e9c4027d67c76dacf4ce32d2e5aace241c426fd288a9976ca750f1b192d3acd89dfbeca07ef27f3e5eb5d482354c4249
