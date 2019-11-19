@@ -766,6 +766,7 @@ class BitcoinECDSA
      *
      * @param bool $compressed
      * @param string $derPubKey (hexa)
+     * @throws \Exception
      * @return String Base58
      */
     public function getUncompressedP2SHAddress($compressed = false, $derPubKey = null)
@@ -797,7 +798,10 @@ class BitcoinECDSA
 
         $address = $this->base58_encode($address);
 
-        return $address;
+        if($this->validateAddress($address))
+            return $address;
+        else
+            throw new \Exception('the generated address seems not to be valid.');
     }
     
     /***
