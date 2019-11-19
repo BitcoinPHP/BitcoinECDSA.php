@@ -761,6 +761,57 @@ class BitcoinECDSA
     }
 
     /***
+     * returns the uncompressed P2SH Bitcoin address generated from the private key if $compressed is false and
+     * the compressed if $compressed is true.
+     *
+     * @param bool $compressed
+     * @param string $derPubKey (hexa)
+     * @return String Base58
+     */
+    public function getUncompressedP2SHAddress($compressed = false, $derPubKey = null)
+    {
+        if($derPubKey !== null)
+        {
+            if($compressed === true) {
+                $pubkey = $this->getPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
+            else {
+                $pubkey = $this->getUncompressedPubKey($this->getPubKeyPointsWithDerPubKey($derPubKey));
+            }
+        }
+        else
+        {
+            if($compressed === true) {
+                $pubkey = $this->getPubKey();
+            }
+            else {
+                $pubkey = $this->getUncompressedPubKey();
+            }
+        }
+
+        $keyhash = '00'.'14'.$this->hash160(hex2bin($pubkey));
+		$address = '05'.$this->hash160(hex2bin($keyhash));
+		
+		$checksum = $this->hash256(hex2bin($address));
+		$address = $address.substr($checksum, 0, 8);
+
+        $address = $this->base58_encode($address);
+
+        return $address;
+    }
+    
+    /***
+     * returns the compressed P2SH Bitcoin address generated from the private key.
+     *
+     * @param string $derPubKey (hexa)
+     * @return String (base58)
+     */
+    public function getP2SHAddress($derPubKey = null)
+    {
+        return $this->getUncompressedP2SHAddress(true, $derPubKey);
+    }
+    
+    /***
      * set a private key.
      *
      * @param string $k (hexa)
