@@ -4,7 +4,7 @@ php:
   - 7.2
 before_install:
     - sudo apt-get update
-    - sudo apt-get install php-gmp
+    - sudo apt-get install php7.2-gmp
     
 install:
   - composer install
