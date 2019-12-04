@@ -1,10 +1,12 @@
 language: php
 
+sudo: true
+
 php:
   - 7.2
 before_install:
     - sudo apt-get update
-    - sudo apt-get install php7.2-gmp
+    - sudo apt-get install php-gmp
     
 install:
   - composer install
