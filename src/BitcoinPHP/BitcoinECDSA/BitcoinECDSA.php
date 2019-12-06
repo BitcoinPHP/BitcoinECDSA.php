@@ -791,10 +791,10 @@ class BitcoinECDSA
         }
 
         $keyhash = '00'.'14'.$this->hash160(hex2bin($pubkey));
-		$address = '05'.$this->hash160(hex2bin($keyhash));
+	$address = '05'.$this->hash160(hex2bin($keyhash));
 		
-		$checksum = $this->hash256(hex2bin($address));
-		$address = $address.substr($checksum, 0, 8);
+	$checksum = $this->hash256(hex2bin($address));
+	$address = $address.substr($checksum, 0, 8);
 
         $address = $this->base58_encode($address);
 
