@@ -14,4 +14,4 @@ php:
 install:
   - composer install
 
-before_script: phpenv config-add phpconfig.ini
+#before_script: phpenv config-add phpconfig.ini
