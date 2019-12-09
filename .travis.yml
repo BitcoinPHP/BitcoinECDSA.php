@@ -5,7 +5,6 @@ sudo: true
 
 php:
   - 7.2
-  env: --with-gmp
 #before_install:
 #    - sudo add-apt-repository ppa:ondrej/php -y
 #    - sudo apt-get update
