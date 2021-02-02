@@ -911,7 +911,7 @@ class BitcoinECDSA
      */
     public function getUncompressedWif()
     {
-        return getWif(false);
+        return $this->getWif(false);
     }
 
     /***
