@@ -384,7 +384,7 @@ class BitcoinECDSA
                               $p
                       );
 
-        // nPtX = slope * (ptX1 - nPtX) - ptY1
+        // nPtY = slope * (ptX1 - nPtX) - ptY1
         $nPt['y']   = gmp_mod(
                               gmp_sub(
                                       gmp_mul(
