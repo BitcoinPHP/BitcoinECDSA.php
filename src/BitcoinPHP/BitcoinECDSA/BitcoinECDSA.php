@@ -1269,8 +1269,9 @@ class BitcoinECDSA
 
         $xRes = gmp_strval($resultingPt['x'], 16);
 
-        while(strlen($xRes) < 64)
-            $xRes = '0' . $xRes;
+        //while(strlen($xRes) < 64)
+        while(strlen($xRes) < strlen($R))
+          $xRes = '0' . $xRes;
 
         if(strtoupper($xRes) === strtoupper($R))
             return true;
