@@ -27,7 +27,7 @@ Best way is to use composer
 ```
 composer require bitcoin-php/bitcoin-ecdsa
 ```
-Alternatively add the following snippet in you composer.json
+Alternatively add the following snippet to your composer.json
 ```
 "bitcoin-php/bitcoin-ecdsa" : ">=1.3"
 ```
