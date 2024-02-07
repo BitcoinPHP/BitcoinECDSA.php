@@ -56,7 +56,7 @@ examples of private keys :
 $bitcoinECDSA->generateRandomPrivateKey($nonce);
 ```
 
-The nonce is optional, typically the nonce is a chunck of random data you get from the user. This can be mouse coordinates.
+The nonce is optional, typically the nonce is a chunk of random data you get from the user. This can be mouse coordinates.
 Using a nonce adds randomness, which means the generated private key is stronger.
 
 **Get the private key**
